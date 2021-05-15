@@ -1,0 +1,189 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Map and Geospatial Hub 3D Explorer</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css" />
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">    
+    <!-- Load icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>    
+    <script src="https://js.arcgis.com/4.18/"></script>  
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+  <a class="navbar-brand">
+    <img src="img/asulogo.png" width="50" height="50" class="d-inline-block align-top" alt="">
+      &nbsp;Map and Geospatial Hub 3D Explorer
+  </a>
+  <div class="collapse navbar-collapse" id="navbarNav" style="">
+        <ul class="navbar-nav mr-auto">           
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href=" https://geospatial.asu.edu" target="_blank" rel="noopener">Map and Geospatial Hub</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://lib.asu.edu/geo/services" target="_blank" rel="noopener">Submit a Service Request</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <div id="viewDiv"></div>
+    <!-- Image and text -->
+    <div class="modal" id="drawerModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="position:absolute;bottom:0;margin:0;width:100%; max-width: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><div id="drawerTitle" style="display: inline-block;"></div>&nbsp;<div id="results" style="display: inline-block;"></div></h5>
+          <button type="button" class="btn btn-outline-success" id="download"><i class="fa fa-download" aria-hidden="true" title="Download table"></i> </button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="drawers-table"></div>
+        </div>        
+      </div>
+    </div>
+</div>
+<div class="modal" id="viewerModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Hub 360 Photo Viewer</h5> 
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>         
+        </div>
+        <div class="modal-body">
+          <iframe width="760" height="400" allowfullscreen style="border-style:none;" src="https://cdn.pannellum.org/2.5/pannellum.htm#panorama=https%3A//rcowling.github.io/3dhub/viewerimage.jpg&autoLoad=true"></iframe>
+        </div>        
+      </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="advancedModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Advanced Search</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Complete fields for at least one criteria. Fields can be left blank.</p>
+        <form>
+   <div class="form-row">    
+    <div class="form-group col-md-6">
+      <label for="theme">Theme</label>
+      <select id="theme" class="form-control">
+        <option selected>Select Theme</option>        
+      </select>
+    </div> 
+    <div class="form-group col-md-6">
+      <label for="language">Language</label>
+      <select id="language" class="form-control">
+        <option selected>Select Language</option>        
+      </select>
+    </div>
+   </div>
+  <div class="form-row">  
+    <div class="form-group col-md-6">  
+      <label for="location">Region / Geography</label>
+      <input type="text" class="form-control" id="location" placeholder="Region / Geography">
+    </div> 
+    <div class="form-group col-md-6">  
+     <label for="format">Format</label>
+      <select id="format" class="form-control">
+        <option selected>Select Format</option>        
+      </select>
+    </div>      
+  </div>          
+  <div class="form-row">  
+    <div class="form-group col-md-6">  
+      <label for="author">Author</label>
+      <input type="text" class="form-control" id="author" placeholder="Author">
+    </div>      
+    <div class="form-group col-md-6">
+      <label for="publisher">Publisher</label>
+      <input type="text" class="form-control" id="publisher" placeholder="Publisher">
+    </div>      
+  </div>                
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="startYear">Start Year</label>
+      <input type="text" class="form-control" id="startYear" placeholder="Start Year">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="endYear">End Year</label>
+      <input type="text" class="form-control" id="endYear" placeholder="End Year">
+    </div>
+    <p><h7>*year format should be YYYY (ie: 1850)</h7></p>
+  </div>
+  <div class="form-row">      
+  </div>            
+</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="advancedBtn">Search</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for the information box -->
+<div class="modal" tabindex="-1" role="dialog" id="infoModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">About the 3D Explorer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Welcome to the virtual Map and Geospatial Hub at ASU Library! We hold thousands of maps, aerial photographs, and other cartographic materials. Find us in the real world in Hayden Library, Room 334.</p>
+        <img src="img/controls.png" alt="nav controls" class="responsive"><br><br>
+        <p>Use the navigation controls to move through and reposition the 3D map scene. Tool tips indicate the function of each control.</p>
+        <img src="img/search.png" alt="search bar" class="responsive"><br><br>
+        <p>Search for cartographic materials by keyword or call number. Advanced Search applies multiple search criteria.<br><br>
+        <img src="img/drawers.png" alt="map drawers" class="responsive"><br>
+        <p>Select map cabinet drawers to view their contents. Select staff offices to learn more about our core team members. Select other features to learn more about the Hub workspace.</p>
+        <img src="img/viewer.png" alt="360 viewer" class="responsive"><br><br>
+        <p>View a 360 degree panorama photo of the Hub workspace.</p>
+
+        <p>Visit our web page to learn more about the ASU Library Map and Geospatial Hub: <a href="geospatial.asu.edu" target="_blank" rel="noopener noreferrer">geospatial.asu.edu</a>.</p>
+
+        <p>Visit the Map and Geospatial Hub’s <a href="https://github.com/mapgeoasu" target="_blank" rel="noopener noreferrer">GitHub Page</a> to learn more about this project, including its code and credits.</p>
+      </div>
+      <!-- <div class="modal-footer">        
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+<div class="container justify-content-center">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="input-group mb-3"> <input type="text" class="form-control input-text" placeholder="Search items..." aria-label="Title Search" id="search" aria-describedby="basic-addon2">
+                <select class="form-control" id="searchtype">
+                  <option>Keyword</option>
+                  <option>Call Number</option>  
+                  <option>Advanced</option>
+                </select>
+                <div class="input-group-append"> <button class="btn btn-outline-warning btn-lg" type="button" id="submit" title="Search"><i class="fa fa-search"></i></button> </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="main.js"></script>
+  </body>
+</html>
