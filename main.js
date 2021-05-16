@@ -257,7 +257,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
               var drawerTitle = graphic.attributes.DRAWER_TITLE;                     
               console.log(shelfTitle);
               //var cabId = graphic.attributes.CAB_ID;
-              $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
+
               console.log(drawerId);
               // Call to the ArcGIS REST API to retreive the maps in each drawer
               $.ajax({
@@ -272,7 +272,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                          };
                          shelfLayer.popupTemplate = {
                             title: "<h6>Shelf ID: " + drawerId,
-                            //content: "Drawer Title: " + drawerTitle + "<br><br>Inventory coming soon!"                         
+                            content: "Description: " + "N/A" + "<br><br>Inventory coming soon!"                         
                          };
                          //$('#noDataModal').modal('show');
                          //view.popup.close();
@@ -286,7 +286,12 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                          var numResults = data.features.length;
                          var startCallNo = data.features[0].attributes.CALL_NUM;
                          var endCallNo = data.features[numResults - 1].attributes.CALL_NUM;   
-                         var shelfName = data.features[0].attributes.LOC_TYPE;                            
+                         var shelfName = data.features[0].attributes.LOC_TYPE;  
+                         if (drawerId >= 241) {
+                            $('#drawerTitle').html("Shelf " + drawerId + ": " + shelfName);
+                          } else {
+                            $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
+                          }                                        
                          cabLayer.popupTemplate = {
                             title: "<b><h6>Drawer ID: " + drawerId + "</b>" ,
                             content: "<h6>Description: "  + drawerTitle + "<br><br> Item Count: " + numResults +
