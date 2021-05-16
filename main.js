@@ -257,7 +257,12 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
               var drawerTitle = graphic.attributes.DRAWER_TITLE;                     
               console.log(shelfTitle);
               //var cabId = graphic.attributes.CAB_ID;
-              $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
+              if (drawerId >= 241) {
+                $('#drawerTitle').html("Shelf " + drawerId + ": " + drawerTitle);
+              } else {
+                $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
+              }
+              
               console.log(drawerId);
               // Call to the ArcGIS REST API to retreive the maps in each drawer
               $.ajax({
@@ -272,7 +277,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                          };
                          shelfLayer.popupTemplate = {
                             title: "<h6>Shelf ID: " + drawerId,
-                            //content: "Drawer Title: " + drawerTitle + "<br><br>Inventory coming soon!"                         
+                            content: "Description: " + "N/A" + "<br><br>Inventory coming soon!"                         
                          };
                          //$('#noDataModal').modal('show');
                          //view.popup.close();
