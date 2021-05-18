@@ -250,13 +250,12 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
             // check if a feature is returned from the cabLayer
             if (response.results.length) {                                 
               $(".esri-icon-table").hide();
+              $("#drawerTitle").hide();
               const graphic = response.results[0].graphic;
               console.log(graphic.attributes);
               // Get the LOC_ID of the clicked drawer
               var drawerId = graphic.attributes.LOC_ID;
-              var drawerTitle = graphic.attributes.DRAWER_TITLE;                     
-              console.log(shelfTitle);
-              //var cabId = graphic.attributes.CAB_ID;
+              var drawerTitle = graphic.attributes.DRAWER_TITLE;               
 
               console.log(drawerId);
               // Call to the ArcGIS REST API to retreive the maps in each drawer
@@ -279,6 +278,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                        } else {
                          // show the cabinet info div
                          $("#drawerTitle").show(); 
+                         $("#maxResults").hide();
                          console.log(data.features);
                          // Get the features from the REST API 
                          var features = data.features;     
@@ -361,7 +361,12 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                  var searchRes = data.features;  
                  $('#drawerModal').modal('show'); 
                  // Get the number of results of the search
-                 var numResults = data.features.length;    
+                 var numResults = data.features.length;   
+                 if (numResults >= 2000) {
+                   $("#maxResults").show();
+                 } else {
+                  $("#maxResults").hide();
+                 }
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');                  
                  // Create a new table with the array of features 
                  table.setData(searchRes);
@@ -375,6 +380,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
               url: tableURL + 'query?where=CALL_NUM+LIKE+%27%25' + searchVal + '%25%27&objectIds=&time=&resultType=none&outFields=*&returnHiddenFields=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson',
               type: "GET",    
               success: function(data) {
+                $("#maxResults").hide();
                 if (data.features.length == 0) {
                   alert('The search returned no results. Please try different terms.');
                 } else {
@@ -505,8 +511,6 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
             }
     });
 
-
-
   // Function to rotate the map
   function rotate() {         
     view.goTo({
@@ -617,8 +621,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     var endYearVal = $("#endYear").val();
     console.log(themeVal, langVal, geoVal, authorVal, pubVal, startYearVal, endYearVal);
     // if the search boxes are blank print error message
-    if (themeVal == 'Select Theme' && langVal == 'Select Language' && geoVal == 'Select Region / Geography' && authorVal == "" 
-      && pubVal == "" && startYearVal == "" && endYearVal == "") {
+    if (themeVal == 'Select Theme' && langVal == 'Select Language' && geoVal == "" && authorVal == "" 
+      && pubVal == "" && startYearVal == "" && endYearVal == "" && formatVal == 'Select Format') {
       alert('Please select or enter a value for at least one search field.')
     } else if (startYearVal != "" && endYearVal == "" || startYearVal == "" && endYearVal != "") {
       alert('Please enter a value for both Start Year and End Year');
@@ -664,13 +668,22 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                 console.log(data);
                 var advancedRes = data.features;
                 table.setData(advancedRes);  
-                var numResults = advancedRes.length;    
+                var numResults = advancedRes.length;
+                if (numResults == 0) {
+                  alert('The search returned no results. Please try different terms.');
+                } else {
+                  if (numResults >= 2000) {
+                    $("#maxResults").show();
+                  } else {
+                    $("#maxResults").hide();
+                  }   
                 $('#results').html(numResults + " items found for advanced search");   
-                $("#drawerTitle").hide();                                                    
-                }                     
-          });   
-      $('#drawerModal').modal('show');
-      $('#advancedModal').modal('hide');    
+                $("#drawerTitle").hide();  
+                $('#drawerModal').modal('show');
+                $('#advancedModal').modal('hide'); 
+                }                                                             
+              }                     
+          });       
     }      
   });
 
