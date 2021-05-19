@@ -13,7 +13,7 @@
             "hotSpots": [
                 {
                     "pitch": -2.1,
-                    "yaw": 80,
+                    "yaw": 59,
                     "type": "scene",
                     "text": "Map and Geospatial Hub Interior",
                     "sceneId": "exterior"
@@ -30,7 +30,7 @@
             "hotSpots": [
                 {
                     "pitch": -0.6,
-                    "yaw": 180,
+                    "yaw": -156,
                     "type": "scene",
                     "text": "Map and Geospatial Hub Exterior",
                     "sceneId": "interior",
