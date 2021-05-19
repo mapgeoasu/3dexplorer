@@ -7,10 +7,7 @@
     
     "scenes": {
         "interior": {
-            "title": "Geospatial Hub Interior",
-            "hfov": 110,
-            "pitch": -3,
-            "yaw": 117,
+            "title": "Geospatial Hub Interior",            
             "type": "equirectangular",
             "panorama": "img/viewerimage.jpg",
             "hotSpots": [
