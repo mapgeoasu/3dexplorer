@@ -227,7 +227,7 @@ h7 {
 .responsive {
   width: 100%;
   height: auto;
-}
+} 
 
 @media only screen and (max-width: 600px) {
   body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container {

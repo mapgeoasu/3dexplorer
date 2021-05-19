@@ -716,7 +716,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     id: "return-to",
     // Sets the icon font used to style the action button
     className: "esri-icon-table"
-  };               
+  };   
 
   // This event fires for each click on any action
   view.popup.on("trigger-action", function(event){
@@ -728,5 +728,5 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     if(event.action.id === "return-to"){
       $('#drawerModal').modal('show');            
     }
-  });        
+  }); 
 }); // end of map JS

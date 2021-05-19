@@ -1,0 +1,46 @@
+{   
+    "default": {
+        "firstScene": "interior",       
+        "sceneFadeDuration": 1000,
+        "autoload": true
+    },
+    
+    "scenes": {
+        "interior": {
+            "title": "Geospatial Hub Interior",
+            "hfov": 110,
+            "pitch": -3,
+            "yaw": 117,
+            "type": "equirectangular",
+            "panorama": "img/viewerimage.jpg",
+            "hotSpots": [
+                {
+                    "pitch": -2.1,
+                    "yaw": 132.9,
+                    "type": "scene",
+                    "text": "Map and Geospatial Hub Interior",
+                    "sceneId": "exterior"
+                }
+            ]
+        },
+
+        "exterior": {
+            "title": "Map and Geospatial Hub Exterior",
+            "hfov": 110,
+            "yaw": 5,
+            "type": "equirectangular",
+            "panorama": "img/viewerimage2.jpg",
+            "hotSpots": [
+                {
+                    "pitch": -0.6,
+                    "yaw": 37.1,
+                    "type": "scene",
+                    "text": "Map and Geospatial Hub Exterior",
+                    "sceneId": "interior",
+                    "targetYaw": -23,
+                    "targetPitch": 2
+                }
+            ]
+        }
+    }
+}
