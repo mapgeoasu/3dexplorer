@@ -7,7 +7,7 @@
     
     "scenes": {
         "interior": {
-            "title": "Geospatial Hub Interior",            
+            "title": "Hub Interior",            
             "type": "equirectangular",
             "panorama": "img/viewerimage.jpg",
             "hotSpots": [
@@ -15,24 +15,24 @@
                     "pitch": -2.1,
                     "yaw": 57,
                     "type": "scene",
-                    "text": "Map and Geospatial Hub Interior",
+                    "text": "Hub Exterior",
                     "sceneId": "exterior"
                 }
             ]
         },
 
         "exterior": {
-            "title": "Map and Geospatial Hub Exterior",
+            "title": "Hub Exterior",
             "hfov": 110,
             "yaw": 5,
             "type": "equirectangular",
             "panorama": "img/viewerimage2.jpg",
             "hotSpots": [
                 {
-                    "pitch": -0.6,
+                    "pitch": 1,
                     "yaw": -156,
                     "type": "scene",
-                    "text": "Map and Geospatial Hub Exterior",
+                    "text": "Hub Interior",
                     "sceneId": "interior",
                     "targetYaw": -23,
                     "targetPitch": 2
