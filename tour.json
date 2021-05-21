@@ -34,9 +34,7 @@
                     "yaw": -156,
                     "type": "scene",
                     "text": "Hub Interior",
-                    "sceneId": "interior",
-                   // "targetYaw": -23,
-                   // "targetPitch": 2
+                    "sceneId": "interior",                   
                 }
             ]
         }
