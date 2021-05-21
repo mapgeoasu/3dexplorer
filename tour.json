@@ -7,7 +7,8 @@
     
     "scenes": {
         "interior": {
-            "title": "Hub Interior",            
+            "title": "Hub Interior", 
+            "yaw": 45,
             "type": "equirectangular",
             "panorama": "img/viewerimage.jpg",
             "hotSpots": [
@@ -24,7 +25,7 @@
         "exterior": {
             "title": "Hub Exterior",
             "hfov": 110,
-            "yaw": -176,
+            "yaw": -180,
             "type": "equirectangular",
             "panorama": "img/viewerimage2.jpg",
             "hotSpots": [
