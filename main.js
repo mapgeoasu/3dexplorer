@@ -726,7 +726,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
       table.redraw(true);
     }
     if(event.action.id === "return-to"){
-      $('#drawerModal').modal('show');            
+      $('#drawerModal').modal('show');  
+      table.redraw(true);
     }
   }); 
 }); // end of map JS
