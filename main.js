@@ -160,8 +160,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                   if (thumbUrl !== '' && thumbUrl !== null) {
                     // View an image.
                     document.getElementById('image').src=thumbUrl;
-                    viewer.update();
-                    viewer.show();
+                    //viewer.update();
+                    //viewer.show();
                     // open a popup at the drawer location of the selected map
                     view.popup.open({
                       // Set the popup's title to the coordinates of the clicked location
