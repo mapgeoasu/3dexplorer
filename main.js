@@ -71,6 +71,13 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
       height: 10000
     }
   };
+
+  const viewer = new Viewer(document.getElementById('image'), {
+  inline: false,
+  viewed() {
+    viewer.zoomTo(1);
+  },
+});
   
   // Creates a new table to hold our map attributes  
   var table = new Tabulator("#drawers-table", {             
@@ -90,8 +97,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
           {title:"Language", field:"attributes.LANG", width: 150},
           {title:"Theme", field:"attributes.THEME", width: 150},
           {title:"Region / Geography", field:"attributes.GEO", width: 200},                
-          {title:"Drawer ID", field:"attributes.LOC_ID", width: 100},   
-          {title:"Location", field:"attributes.LOCATION", width: 100},             
+          {title:"Drawer ID", field:"attributes.LOC_ID", width: 120},                         
       ],            
       // Detect when someone clicks on a row in the table
       rowClick:function(e, row){ 
@@ -101,7 +107,9 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
         //e - the click event object
         //row - row component
         // Get the LOC_ID from the selected row in the table            
-        var drawerId = row._row.data.attributes.LOC_ID;               
+        var drawerId = row._row.data.attributes.LOC_ID;  
+        var itemTitle = row._row.data.attributes.TITLE;
+        var thumbUrl = row._row.data.attributes.THUMB_URL;             
         console.log('you clicked a row'); 
         if (drawerId < 241) {
           // Get the cabinets layer from webScene
@@ -148,14 +156,31 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                   // highlight the feature with the returned objectId
                   highlight = layerView.highlight([objectID]);
                   })
-                  // open a popup at the drawer location of the selected map
-                  view.popup.open({
-                    // Set the popup's title to the coordinates of the clicked location
-                    title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
-                    content: "The item " + '<b>"' + row._row.data.attributes.TITLE + '"</b> ' + "is located in Drawer " + drawerId + ".",
-                    location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
-                    actions: [returnToAction]      
-                  });
+                  // check if the clicked record has an existing image
+                  if (thumbUrl !== '' && thumbUrl !== null) {
+                    // View an image.
+                    document.getElementById('image').src=thumbUrl;
+                    viewer.update();
+                    viewer.show();
+                    // open a popup at the drawer location of the selected map
+                    view.popup.open({
+                      // Set the popup's title to the coordinates of the clicked location
+                      title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
+                      content: "The item " + '<b>"' + itemTitle + '"</b> ' + "is located in Drawer " + drawerId + ".<br><br>"
+                      + "<a href='" + thumbUrl + "'target='_blank' rel='noopener'><img src='" + thumbUrl + "' class='responsive'></a>",
+                      location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+                      actions: [returnToAction]      
+                    });
+                  } else {
+                    view.popup.open({
+                      // Set the popup's title to the coordinates of the clicked location
+                      title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
+                      content: "The item " + '<b>"' + itemTitle + '"</b> ' + "is located in Drawer " + drawerId + ".",
+                      location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+                      actions: [returnToAction]      
+                    });
+
+                  }
              });           
       } else if (drawerId >= 241) {
         // Get the cabinets layer from webScene

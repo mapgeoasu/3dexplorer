@@ -10,13 +10,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.css" integrity="sha512-tYobxYoCZxl0CejYCA8c4w8HRcg3wRoKaGYIQ/2ILqyB4vRqMd/Jmehxod1dQJ2uE/9rDY9pG48isM8SHEAwDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>    
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.js" integrity="sha512-psAniLUS9J4A5KNQiSt9XMNeVSMx/Rz89vQJqeYlOIiTR5WK8zU/8EPwAKt+522eeV04QUzIwX5VrAW10FbdeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
     <script src="https://js.arcgis.com/4.18/"></script>  
   </head>
-  <body>
+  <body>     
     <!-- Main navbar -->
     <nav class="navbar navbar-expand-md navbar-light bg-light">
   <a class="navbar-brand" href="https://mapgeoasu.github.io/3dexplorer/" target="_blank" rel="noopener">
@@ -36,7 +38,10 @@
         </ul>
     </div>
 </nav>
-    <div id="viewDiv"></div>
+    <div id="viewDiv"></div> 
+    <div>
+  <img id="image" src="" alt="Picture">
+</div>  
     <!-- Modal for the drawer/search table -->
     <div class="modal" id="drawerModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document" style="position:absolute;bottom:0;margin:0;width:100%; max-width: none;">
