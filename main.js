@@ -72,12 +72,35 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     }
   };
 
-  const viewer = new Viewer(document.getElementById('image'), {
-  inline: false,
-  viewed() {
-    viewer.zoomTo(1);
-  },
-});
+  // setup a new viewer to display the map scans
+  var viewer = new Viewer(document.getElementById('image'), {
+    navbar: false,
+    inline: false,
+    toolbar: {
+      zoomIn: 1,
+      zoomOut: 1,
+      oneToOne: 1,
+      reset: 1,
+      prev: 0,
+      play: {
+        show: 1,
+        size: 'large',
+      },
+      next: 0,
+      rotateLeft: 1,
+      rotateRight: 1,
+      flipHorizontal: 1,
+      flipVertical: 1,
+    },
+    viewed() {
+      viewer.zoomTo(1);
+    },
+  });  
+
+  // when the user clicks on the thumbnail in the popup launch the viewer
+  $(document).on('click','.thumbdisplay', function(){
+    viewer.show();
+  });
   
   // Creates a new table to hold our map attributes  
   var table = new Tabulator("#drawers-table", {             
@@ -158,19 +181,20 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                   })
                   // check if the clicked record has an existing image
                   if (thumbUrl !== '' && thumbUrl !== null) {
-                    // View an image.
+                    // change the image URL and title to display in the viewer
                     document.getElementById('image').src=thumbUrl;
-                    //viewer.update();
-                    //viewer.show();
+                     document.getElementById('image').alt=itemTitle;
+                    viewer.update();
+                    
                     // open a popup at the drawer location of the selected map
                     view.popup.open({
                       // Set the popup's title to the coordinates of the clicked location
                       title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
                       content: "The item " + '<b>"' + itemTitle + '"</b> ' + "is located in Drawer " + drawerId + ".<br><br>"
-                      + "<a href='" + thumbUrl + "'target='_blank' rel='noopener'><img src='" + thumbUrl + "' class='responsive'></a>",
+                      + "<img src='" + thumbUrl + "' class='thumbdisplay'/>",
                       location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
                       actions: [returnToAction]      
-                    });
+                    });                    
                   } else {
                     view.popup.open({
                       // Set the popup's title to the coordinates of the clicked location

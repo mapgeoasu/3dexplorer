@@ -241,6 +241,16 @@ h7 {
 .responsive {
   width: 100%;
   height: auto;
+}
+
+.thumbdisplay {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+#image {
+  display: none;
 } 
 
 @media only screen and (max-width: 600px) {
@@ -265,5 +275,15 @@ h7 {
     top: 71px;
     left: 45px;
   }  
+}
+
+@media only screen and (max-device-width: 1200px){
+  /*Search bar container*/
+.container {
+    position: absolute;
+    width: 90%;
+    top: 71px;
+    left: 45px;
+}
 }
 
