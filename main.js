@@ -129,10 +129,21 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
         $('#drawerModal').modal('hide');        
         //e - the click event object
         //row - row component
-        // Get the LOC_ID from the selected row in the table            
+        // Get the attributes from the selected row in the table            
         var drawerId = row._row.data.attributes.LOC_ID;  
         var itemTitle = row._row.data.attributes.TITLE;
-        var thumbUrl = row._row.data.attributes.THUMB_URL;             
+        var itemDate = row._row.data.attributes.DATE;
+        var itemAuthor = row._row.data.attributes.AUTHOR;
+        var itemLink = row._row.data.attributes.CATALOG_LINK;
+        var itemPub =  row._row.data.attributes.PUBLISHER;
+        var itemScale =  row._row.data.attributes.SCALE;
+        var itemNum =  row._row.data.attributes.CALL_NUM;
+        var thumbUrl = row._row.data.attributes.THUMB_URL; 
+        // if the item has no scale leave it blank
+        if (itemScale == '' || itemScale == null) {
+          itemScale = " ";
+        }  
+              
         console.log('you clicked a row'); 
         if (drawerId < 241) {
           // Get the cabinets layer from webScene
@@ -183,15 +194,19 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                   if (thumbUrl !== '' && thumbUrl !== null) {
                     // change the image URL and title to display in the viewer
                     document.getElementById('image').src=thumbUrl;
-                     document.getElementById('image').alt=itemTitle;
+                    document.getElementById('image').alt=itemTitle;
                     viewer.update();
                     
                     // open a popup at the drawer location of the selected map
                     view.popup.open({
                       // Set the popup's title to the coordinates of the clicked location
-                      title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
-                      content: "The item " + '<b>"' + itemTitle + '"</b> ' + "is located in Drawer " + drawerId + ".<br><br>"
-                      + "<img src='" + thumbUrl + "' class='thumbdisplay'/>",
+                      title: "<h6><b>" + itemTitle + "</b>",  
+                      content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
+                      "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
+                      itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
+                      "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
+                      "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
+                      "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
                       location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
                       actions: [returnToAction]      
                     });                    
@@ -203,7 +218,6 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                       location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
                       actions: [returnToAction]      
                     });
-
                   }
              });           
       } else if (drawerId >= 241) {
