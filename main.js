@@ -97,191 +97,292 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     },
   });  
 
-  // when the user clicks on the thumbnail in the popup launch the viewer
-  $(document).on('click','.thumbdisplay', function(){
+  /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
+function openNav() {
+  document.getElementById("mySidebar").style.width = "25%";
+  document.getElementById("viewDiv").style.marginLeft = "25%";
+  document.getElementById("viewDiv").style.width = "75%";
+  document.getElementsByClassName("container")[0].style.width = "80%";
+  //document.getElementsByClassName("container")[0].style.left = "28%";
+}
+
+/* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+function closeNav() {
+  document.getElementById("mySidebar").style.width = "0";
+  document.getElementById("viewDiv").style.marginLeft = "0";
+  document.getElementById("viewDiv").style.width = "100%";
+  document.getElementsByClassName("container")[0].style.width = "60%";
+  //document.getElementsByClassName("container")[0].style.left = "3%";
+}
+
+  // when a row in the table is seleted or queried, get its attributes.
+  // populate a new popup with this information 
+  function getRowData(row) {                       
+    //view.popup.close();
+    var drawerId = row._row.data.attributes.LOC_ID;  
+    var itemTitle = row._row.data.attributes.TITLE;
+    var itemDate = row._row.data.attributes.DATE;
+    var itemAuthor = row._row.data.attributes.AUTHOR;
+    var itemLink = row._row.data.attributes.CATALOG_LINK;
+    var itemPub =  row._row.data.attributes.PUBLISHER;
+    var itemScale =  row._row.data.attributes.SCALE;
+    var itemNum =  row._row.data.attributes.CALL_NUM;
+    var thumbUrl = row._row.data.attributes.THUMB_URL;
+
+    // Truncate the popup title
+    if (itemTitle.length > 40) {
+      var truncTitle = (itemTitle.substring(0, 40) + "...");
+    } else {
+      var truncTitle = itemTitle;
+    }
+        
+    // if the item has no scale leave it blank
+    if (itemScale == '' || itemScale == null) {
+      itemScale = " ";   
+    }   
+
+    if (drawerId < 241) {
+      // Get the cabinets layer from webScene
+      var cabLayer = webscene.allLayers.filter(function(elem) {
+        return elem.title === cabTitle;
+      }).items[0];        
+      var query = cabLayer.createQuery();
+      // Query the cabinets layer for the LOC_ID
+      query.where = "LOC_ID =" + "'" + drawerId + "'";
+      query.returnGeometry = true;               
+      query.returnZ = true;
+      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+      cabLayer.queryFeatures(query)
+        .then(function(response){
+           // returns a feature set with features containing an OBJECTID
+           var objectID = response.features[0].attributes.OBJECTID;
+           //var cabId = response.features[0].attributes.CAB_ID;
+           var zmin = (response.features[0].attributes.Z_Min / 3.28);
+           var zmax = (response.features[0].attributes.Z_Max / 3.28);
+          
+           view.whenLayerView(cabLayer).then(function(layerView) {
+              var queryExtent = new Query({
+                objectIds: [objectID]
+              });
+              // zoom to the extent of drawer that is clicked on the table  
+              var new_ext = new Extent({
+                xmin: response.features[0].geometry.extent.xmin, 
+                ymin: response.features[0].geometry.extent.ymin, 
+                zmin: zmin,
+                xmax: response.features[0].geometry.extent.xmax, 
+                ymax: response.features[0].geometry.extent.ymax,
+                zmax: zmax,                        
+                spatialReference: { wkid: 4326 }
+              });
+
+              cabLayer.queryExtent(queryExtent).then(function(result) {
+                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
+              });
+
+              // reduce popup size
+              $(function() {            
+                  $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+                });
+              
+              // if any, remove the previous highlights
+              if (highlight) {
+                highlight.remove();
+              }
+              // highlight the feature with the returned objectId
+              highlight = layerView.highlight([objectID]);
+              })
+              // check if the clicked record has an existing image
+              if (thumbUrl !== '' && thumbUrl !== null) {
+                // change the image URL and title to display in the viewer
+                document.getElementById('image').src=thumbUrl;
+                document.getElementById('image').alt=itemTitle;
+                viewer.update();                
+                
+                // open a popup at the drawer location of the selected map
+                view.popup.open({                  
+                  // Set the popup's title to the coordinates of the clicked location
+                  title: "<h6><b>" + truncTitle,  
+                  content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
+                  "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
+                  itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
+                  "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
+                  "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
+                  "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+                  // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
+                  location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+                  actions: []      
+                });                   
+              } else {
+                view.popup.open({
+                  // Set the popup's title to the coordinates of the clicked location
+                  title: "<h6><b>" + truncTitle,   
+                  content: "<b>Title: </b>" + itemTitle +
+                  "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
+                  itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
+                  "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
+                  "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
+                  "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+                  //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
+                  location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+                  actions: []      
+                });                 
+              }
+         });           
+  } else if (drawerId >= 241) {
+    // Get the cabinets layer from webScene
+      var shelfLayer = webscene.allLayers.filter(function(elem) {
+        return elem.title === shelfTitle;
+      }).items[0];        
+      var query = shelfLayer.createQuery();
+      // Query the cabinets layer for the LOC_ID
+      query.where = "LOC_ID =" + "'" + drawerId + "'";
+      query.returnGeometry = true;               
+      query.returnZ = true;
+      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+      shelfLayer.queryFeatures(query)
+        .then(function(response){
+           // returns a feature set with features containing an OBJECTID
+           var objectID = response.features[0].attributes.OBJECTID;
+           //var cabId = response.features[0].attributes.CAB_ID;
+           var zmin = (response.features[0].attributes.Z_Min / 3.28);
+           var zmax = (response.features[0].attributes.Z_Max / 3.28);
+          
+           view.whenLayerView(shelfLayer).then(function(layerView) {
+              var queryExtent = new Query({
+                objectIds: [objectID]
+              });
+              // zoom to the extent of drawer that is clicked on the table  
+              var new_ext = new Extent({
+                xmin: response.features[0].geometry.extent.xmin, 
+                ymin: response.features[0].geometry.extent.ymin, 
+                zmin: zmin,
+                xmax: response.features[0].geometry.extent.xmax, 
+                ymax: response.features[0].geometry.extent.ymax,
+                zmax: zmax,                        
+                spatialReference: { wkid: 4326 }
+              });
+
+              shelfLayer.queryExtent(queryExtent).then(function(result) {
+                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
+              });
+              
+              // if any, remove the previous highlights
+              if (highlight) {
+                highlight.remove();
+              }
+              // highlight the feature with the returned objectId
+              highlight = layerView.highlight([objectID]);
+              })
+              // open a popup at the drawer location of the selected map
+              view.popup.open({
+                // Set the popup's title to the coordinates of the clicked location                          
+                title: "<h6><b>Shelf ID: "  + drawerId + "</b>", 
+                content: "The item " + '"<b>' + row._row.data.attributes.TITLE + '</b>" ' + "is located in Shelf " + drawerId + ".",
+                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location  
+                actions: [returnToAction]      
+              });
+         });
+  }  
+  }
+
+  // when the user clicks the thumbnail, open the viewer
+  $(document).on('click','.thumbdisplay', function(){    
     viewer.show();
   });
+
+  // when the user clicks the previous button, show the previous record in the table
+  $(document).on('click','.previous', function(){    
+    var selected = table.getSelectedRows();
+    console.log(selected);
+    var prevRow = selected[0].getPrevRow();
+    if (prevRow == false) {
+      console.log('false');
+    }
+    // deselect the previously selected row
+    selected[0].deselect();
+    // select the new row
+    prevRow.select();
+    getRowData(prevRow); 
+    var scroll = document.getElementsByClassName('tabulator-selected')[0];
+    scroll.scrollIntoView(); 
+  });
+  // when the user clicks the next button, show the next record in the table
+  $(document).on('click','.next', function(){    
+    var selected = table.getSelectedRows();
+    console.log(selected);
+    var nextRow = selected[0].getNextRow();
+    selected[0].deselect();
+    nextRow.select();
+    getRowData(nextRow);
+    var scroll = document.getElementsByClassName('tabulator-selected')[0];
+    scroll.scrollIntoView();
+    if (nextRow == false) {
+                  
+                  $('.next').css({"display":"none"});
+                
+                }
+    //table.scrollToRow(nextRow, "nearest", false);
+  });
+
+  $(document).on('click','.previous', function(){    
+  var selected = table.getSelectedRows();
+                //console.log(selected);
+                 var prevRow = selected[0].getPrevRow();
+                if (prevRow == false) {
+                  
+                  $('.previous').css({"display":"none"});
+                
+                }
+                });            
+
+  // use keyboard forward and back arrows to cycle through rows
+  $(document).keydown(function (e) {
+    if (event.keyCode == 37) {
+      $('.previous').click(); //on left arrow, click previous 
+    } else if (event.keyCode == 39) {
+      $('.next').click(); //on right arrow, click next
+    }
+  }); 
   
   // Creates a new table to hold our map attributes  
   var table = new Tabulator("#drawers-table", {             
-      height: 350,            
+      height: "90%", 
+      responsiveLayout:"collapse",   
+      layout:"fitDataFill",         
       selectable: 1,
       clipboard:true, //enable clipboard functionality              
       columns:[
           {title:"Title", field:"attributes.TITLE", width: 500},
-          {title:"Author", field:"attributes.AUTHOR", width: 300},
+          {title:"Author", field:"attributes.AUTHOR", width: 300, visible:false},
           {title:"Publisher", field:"attributes.PUBLISHER", width: 300},
-          {title:"Publication Date", field:"attributes.DATE", width: 150},
-          {title:"Scale", field:"attributes.SCALE", width: 120},
-          {title:"Catalog Item", field:"attributes.CATALOG_LINK", width: 400, formatter:"link", formatterParams:{                   
-             target:"_blank",
-          }},
-          {title:"Call Number", field:"attributes.CALL_NUM", width: 250},                                
-          {title:"Language", field:"attributes.LANG", width: 150},
-          {title:"Theme", field:"attributes.THEME", width: 150},
-          {title:"Region / Geography", field:"attributes.GEO", width: 200},                
-          {title:"Drawer ID", field:"attributes.LOC_ID", width: 120},                         
+          {title:"Date", field:"attributes.DATE", width: 150},
+          {title:"Scale", field:"attributes.SCALE", width: 120, visible:false},
+          //{title:"Catalog Item", field:"attributes.CATALOG_LINK", width: 400, formatter:"link", formatterParams:{                   
+           //  target:"_blank",
+          //}},
+          {title:"Call Number", field:"attributes.CALL_NUM", width: 250, visible:false},                                
+          {title:"Language", field:"attributes.LANG", width: 150, visible:false},
+          {title:"Theme", field:"attributes.THEME", width: 150, visible:false},
+          {title:"Region / Geography", field:"attributes.GEO", width: 200, visible:false},                
+          {title:"Drawer ID", field:"attributes.LOC_ID", width: 120, visible:false},                         
       ],            
       // Detect when someone clicks on a row in the table
       rowClick:function(e, row){ 
         view.popup.close();   
         // When the table row is clicked hide the table 
         $('#drawerModal').modal('hide');        
-        //e - the click event object
-        //row - row component
-        // Get the attributes from the selected row in the table            
-        var drawerId = row._row.data.attributes.LOC_ID;  
-        var itemTitle = row._row.data.attributes.TITLE;
-        var itemDate = row._row.data.attributes.DATE;
-        var itemAuthor = row._row.data.attributes.AUTHOR;
-        var itemLink = row._row.data.attributes.CATALOG_LINK;
-        var itemPub =  row._row.data.attributes.PUBLISHER;
-        var itemScale =  row._row.data.attributes.SCALE;
-        var itemNum =  row._row.data.attributes.CALL_NUM;
-        var thumbUrl = row._row.data.attributes.THUMB_URL; 
-        // if the item has no scale leave it blank
-        if (itemScale == '' || itemScale == null) {
-          itemScale = " ";
-        }  
-              
-        console.log('you clicked a row'); 
-        if (drawerId < 241) {
-          // Get the cabinets layer from webScene
-          var cabLayer = webscene.allLayers.filter(function(elem) {
-            return elem.title === cabTitle;
-          }).items[0];        
-          var query = cabLayer.createQuery();
-          // Query the cabinets layer for the LOC_ID
-          query.where = "LOC_ID =" + "'" + drawerId + "'";
-          query.returnGeometry = true;               
-          query.returnZ = true;
-          query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
-          cabLayer.queryFeatures(query)
-            .then(function(response){
-               // returns a feature set with features containing an OBJECTID
-               var objectID = response.features[0].attributes.OBJECTID;
-               //var cabId = response.features[0].attributes.CAB_ID;
-               var zmin = (response.features[0].attributes.Z_Min / 3.28);
-               var zmax = (response.features[0].attributes.Z_Max / 3.28);
-              
-               view.whenLayerView(cabLayer).then(function(layerView) {
-                  var queryExtent = new Query({
-                    objectIds: [objectID]
-                  });
-                  // zoom to the extent of drawer that is clicked on the table  
-                  var new_ext = new Extent({
-                    xmin: response.features[0].geometry.extent.xmin, 
-                    ymin: response.features[0].geometry.extent.ymin, 
-                    zmin: zmin,
-                    xmax: response.features[0].geometry.extent.xmax, 
-                    ymax: response.features[0].geometry.extent.ymax,
-                    zmax: zmax,                        
-                    spatialReference: { wkid: 4326 }
-                  });
-
-                  cabLayer.queryExtent(queryExtent).then(function(result) {
-                    view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
-                  });
-                  
-                  // if any, remove the previous highlights
-                  if (highlight) {
-                    highlight.remove();
-                  }
-                  // highlight the feature with the returned objectId
-                  highlight = layerView.highlight([objectID]);
-                  })
-                  // check if the clicked record has an existing image
-                  if (thumbUrl !== '' && thumbUrl !== null) {
-                    // change the image URL and title to display in the viewer
-                    document.getElementById('image').src=thumbUrl;
-                    document.getElementById('image').alt=itemTitle;
-                    viewer.update();
-                    
-                    // open a popup at the drawer location of the selected map
-                    view.popup.open({
-                      // Set the popup's title to the coordinates of the clicked location
-                      title: "<h6><b>" + itemTitle + "</b>",  
-                      content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
-                      "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
-                      itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
-                      "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
-                      "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
-                      "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
-                      location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
-                      actions: [returnToAction]      
-                    });                    
-                  } else {
-                    view.popup.open({
-                      // Set the popup's title to the coordinates of the clicked location
-                      title: "<h6><b>Drawer ID: "  + drawerId + "</b>",  
-                      content: "The item " + '<b>"' + itemTitle + '"</b> ' + "is located in Drawer " + drawerId + ".",
-                      location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
-                      actions: [returnToAction]      
-                    });
-                  }
-             });           
-      } else if (drawerId >= 241) {
-        // Get the cabinets layer from webScene
-          var shelfLayer = webscene.allLayers.filter(function(elem) {
-            return elem.title === shelfTitle;
-          }).items[0];        
-          var query = shelfLayer.createQuery();
-          // Query the cabinets layer for the LOC_ID
-          query.where = "LOC_ID =" + "'" + drawerId + "'";
-          query.returnGeometry = true;               
-          query.returnZ = true;
-          query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
-          shelfLayer.queryFeatures(query)
-            .then(function(response){
-               // returns a feature set with features containing an OBJECTID
-               var objectID = response.features[0].attributes.OBJECTID;
-               //var cabId = response.features[0].attributes.CAB_ID;
-               var zmin = (response.features[0].attributes.Z_Min / 3.28);
-               var zmax = (response.features[0].attributes.Z_Max / 3.28);
-              
-               view.whenLayerView(shelfLayer).then(function(layerView) {
-                  var queryExtent = new Query({
-                    objectIds: [objectID]
-                  });
-                  // zoom to the extent of drawer that is clicked on the table  
-                  var new_ext = new Extent({
-                    xmin: response.features[0].geometry.extent.xmin, 
-                    ymin: response.features[0].geometry.extent.ymin, 
-                    zmin: zmin,
-                    xmax: response.features[0].geometry.extent.xmax, 
-                    ymax: response.features[0].geometry.extent.ymax,
-                    zmax: zmax,                        
-                    spatialReference: { wkid: 4326 }
-                  });
-
-                  shelfLayer.queryExtent(queryExtent).then(function(result) {
-                    view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
-                  });
-                  
-                  // if any, remove the previous highlights
-                  if (highlight) {
-                    highlight.remove();
-                  }
-                  // highlight the feature with the returned objectId
-                  highlight = layerView.highlight([objectID]);
-                  })
-                  // open a popup at the drawer location of the selected map
-                  view.popup.open({
-                    // Set the popup's title to the coordinates of the clicked location                          
-                    title: "<h6><b>Shelf ID: "  + drawerId + "</b>", 
-                    content: "The item " + '"<b>' + row._row.data.attributes.TITLE + '</b>" ' + "is located in Shelf " + drawerId + ".",
-                    location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location  
-                    actions: [returnToAction]      
-                  });
-             });
-      }   
-    }
+        // when a row in the table is clicked call the getRowData function
+        getRowData(row);   
+      }    
   });        
   
   //trigger download of mapdata.csv file
   $("#download").click(function(){
       table.download("csv", "mapdata.csv", {sheetName:"Map Data"});
-  });        
+  });
+
+  // declare features as global variable so it can retreive results in the table        
+  var features;
 
   view.when(function() {
     // Get the cabinets layer from webScene
@@ -344,7 +445,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                          $("#maxResults").hide();
                          console.log(data.features);
                          // Get the features from the REST API 
-                         var features = data.features;     
+                         features = data.features;     
                          //$('#drawerModal').modal('show');                            
                          var numResults = data.features.length;
                          var startCallNo = data.features[0].attributes.CALL_NUM;
@@ -370,8 +471,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                          };
 
                          $('#results').html(" | Item count: " + numResults + " items");  
-                         // Create a new table with the array of features 
-                         table.setData(features);                                 
+                         // clear any existing data in the table upon a new drawer click
+                         table.clearData();                             
                        }
                       }
               });   
@@ -399,9 +500,84 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     })
   });
 
+  function highLightDrawers (results) {
+    var objectIds = [];
+    results.forEach(function(result) {
+      var drawers = result.attributes.LOC_ID;      
+      objectIds.push(drawers);
+    });
+
+    var uniqueIds = [...new Set(objectIds)];
+    console.log(objectIds);
+    console.log(uniqueIds);
+    var drawerQuery = uniqueIds.join(" OR LOC_ID = ");
+    console.log(drawerQuery);
+    var cabLayer = webscene.allLayers.filter(function(elem) {
+        return elem.title === cabTitle;
+      }).items[0];        
+      var query = cabLayer.createQuery();
+      // Query the cabinets layer for the LOC_ID
+      query.where = "LOC_ID = " + drawerQuery;
+      query.returnGeometry = true;               
+      query.returnZ = true;
+      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+      cabLayer.queryFeatures(query)
+        .then(function(response){
+            console.log(response);
+            var objIds = [];
+           // returns a feature set with features containing an OBJECTID
+           var objectID = response.features[0].attributes.OBJECTID;
+           var feature = response.features;
+           feature.forEach(function(feature) {
+            var ids = feature.attributes.OBJECTID;
+            objIds.push(ids);
+           });
+           console.log(objIds);
+           //var cabId = response.features[0].attributes.CAB_ID;
+           var zmin = (response.features[0].attributes.Z_Min / 3.28);
+           var zmax = (response.features[0].attributes.Z_Max / 3.28);
+          
+           view.whenLayerView(cabLayer).then(function(layerView) {
+              var queryExtent = new Query({
+                objectIds: [objIds]
+              });
+              // zoom to the extent of drawer that is clicked on the table  
+              var new_ext = new Extent({
+                xmin: response.features[0].geometry.extent.xmin, 
+                ymin: response.features[0].geometry.extent.ymin, 
+                zmin: zmin,
+                xmax: response.features[0].geometry.extent.xmax, 
+                ymax: response.features[0].geometry.extent.ymax,
+                zmax: zmax,                        
+                spatialReference: { wkid: 4326 }
+              });
+
+              cabLayer.queryExtent(queryExtent).then(function(result) {
+                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
+              });
+              
+              // if any, remove the previous highlights
+              if (highlight) {
+                highlight.remove();
+              }
+              // highlight the feature with the returned objectId
+              highlight = layerView.highlight(objIds);
+              })
+              // open a popup at the drawer location of the selected map
+              view.popup.open({
+                // Set the popup's title to the coordinates of the clicked location                          
+                title: "<h6><b>Search Results are located in XXXXX... test</b>", 
+               // content: "The item " + '"<b>' + row._row.data.attributes.TITLE + '</b>" ' + "is located in Shelf " + drawerId + ".",
+                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location  
+                actions: [returnToAction]      
+              });
+         });
+  }
+
   // Code for the search bar functions
   $( "#submit" ).click(function() {
     view.popup.close();
+    table.clearData();
    // $(".esri-icon-table").show();
     // get the value of the search box
     var searchVal = $( "#search" ).val();
@@ -422,7 +598,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                  console.log(data.features);
                  // Get the features from the REST API 
                  var searchRes = data.features;  
-                 $('#drawerModal').modal('show'); 
+                // $('#drawerModal').modal('show');
+                 openNav(); 
                  // Get the number of results of the search
                  var numResults = data.features.length;   
                  if (numResults >= 2000) {
@@ -433,6 +610,8 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');                  
                  // Create a new table with the array of features 
                  table.setData(searchRes);
+                 console.log(searchRes);
+                 highLightDrawers(searchRes);
                 }
               }
       });  
@@ -452,7 +631,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                  console.log(data.features);
                  // Get the features from the REST API 
                  var searchRes = data.features;  
-                 $('#drawerModal').modal('show');  
+                 openNav();  
                  var numResults = data.features.length;    
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');
                  // Create a new table with the array of features 
@@ -670,6 +849,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   // when someone clicks the advanced search submit button        
   $("#advancedBtn").click(function(){
+    table.clearData();
     view.popup.close();
     // create an empty array for search strings
     var searchStrings = [];
@@ -742,7 +922,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
                   }   
                 $('#results').html(numResults + " items found for advanced search");   
                 $("#drawerTitle").hide();  
-                $('#drawerModal').modal('show');
+                openNav();
                 $('#advancedModal').modal('hide'); 
                 }                                                             
               }                     
@@ -757,6 +937,12 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   $('#endYear').change(function() {
     $(this).val($(this).val().match(/\d*\.?\d+/));
+  });
+
+  // close button of the sidebar 
+  // when someone clicks the advanced search submit button        
+  $(".closebtn").click(function(){
+    closeNav();
   });
 
   // Popup Actions        
@@ -781,16 +967,42 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     className: "esri-icon-table"
   };   
 
+   var nextAction = {
+    // This text is displayed as a tooltip
+    title: "Next",
+    // The ID by which to reference the action in the event handler
+    id: "next-record",
+    // Sets the icon font used to style the action button
+    className: "esri-icon-collection"
+  };  
+
   // This event fires for each click on any action
   view.popup.on("trigger-action", function(event){
     // If the view image action is clicked, open the table modal
     if(event.action.id === "view-table"){
-      $('#drawerModal').modal('show');
+      openNav();
+      table.setData(features);
       table.redraw(true);
     }
     if(event.action.id === "return-to"){
       $('#drawerModal').modal('show');  
       table.redraw(true);
+    }
+    if(event.action.id === "next-record"){
+       var selected = table.getSelectedRows();
+    console.log(selected);
+    var nextRow = selected[0].getNextRow();
+    selected[0].deselect();
+    nextRow.select();
+    getRowData(nextRow);
+    var scroll = document.getElementsByClassName('tabulator-selected')[0];
+    scroll.scrollIntoView();
+    if (nextRow == false) {
+                  console.log(false);
+                  console.log(view.popup.actions);
+                  view.popup.viewModel.actions.getItemAt(2).visible = false;
+                
+                }
     }
   }); 
 }); // end of map JS

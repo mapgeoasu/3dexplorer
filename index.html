@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css" />
     <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">    
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.9.3/css/tabulator_midnight.min.css" integrity="sha512-epdhm+q+Caq67Ujjcr7kPkNsBoFtmyaqHFuujUjygZnnRVRK70X6dOjX3Z4RDJF+bmG1KBwYHJ/OxMZgm1F2hQ==" crossorigin="anonymous" /> -->
     <!-- Load icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -38,7 +39,28 @@
         </ul>
     </div>
 </nav>
-    <div id="viewDiv"></div> 
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <center><div id="drawerTitle" style="display: inline-block;"></div>&nbsp;<div id="results" style="display: inline-block;"></div></h5>
+         <!--  <button type="button" class="btn btn-outline-success" id="download"><i class="fa fa-download" aria-hidden="true" title="Download table"></i> </button>&nbsp;&nbsp; --><div id="maxResults" style="display: inline-block;">*Searches limited to 2000 results</div></center>
+  <div id="drawers-table"></div>
+</div>
+    <div id="viewDiv">
+      <div class="container justify-content-center">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="input-group mb-3"> <input type="text" class="form-control input-text" placeholder="Search items..." aria-label="Title Search" id="search" aria-describedby="basic-addon2" autocomplete="off">
+                <select class="form-control" id="searchtype">
+                  <option>Keyword</option>
+                  <option>Call Number</option>  
+                  <option>Advanced</option>
+                </select>
+                <div class="input-group-append"> <button class="btn btn-outline-warning btn-lg" type="button" id="submit" title="Search"><i class="fa fa-search"></i></button> </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div> 
 <div>
   <img id="image" src="" alt="Picture">
 </div>  
@@ -54,7 +76,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <div id="drawers-table"></div>
+          
         </div>        
       </div>
     </div>
@@ -179,20 +201,7 @@
   </div>
 </div>
 <!-- Search Bar -->
-<div class="container justify-content-center">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="input-group mb-3"> <input type="text" class="form-control input-text" placeholder="Search items..." aria-label="Title Search" id="search" aria-describedby="basic-addon2">
-                <select class="form-control" id="searchtype">
-                  <option>Keyword</option>
-                  <option>Call Number</option>  
-                  <option>Advanced</option>
-                </select>
-                <div class="input-group-append"> <button class="btn btn-outline-warning btn-lg" type="button" id="submit" title="Search"><i class="fa fa-search"></i></button> </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <script src="main.js"></script>
   </body>
 </html>
