@@ -22,7 +22,7 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;    
+  font-size: 20px;   
 }
 /*Navbar links*/
 .navbar-light .navbar-nav .nav-link {
@@ -41,14 +41,12 @@ body, html {
 #search {
   width: 50%;
   border-radius: 5px 0px 0px 5px;
-   box-shadow: 0 0px 2px rgb(0 0 0 / 30%);
 }
 /*Search bar drop downmenu*/
 #searchtype {  
   z-index: 2;
   width: 15%;
   border-radius: .0rem .0rem .0rem .0rem;
-   box-shadow: 0 0px 2px rgb(0 0 0 / 30%);
 }
 
 #searchtype:focus {
@@ -76,14 +74,14 @@ body, html {
 .container {
     position: absolute;
     width: 60%;
-    top: 15px;
-    left: 45px;    
+    top: 71px;
+    left: 45px;
 }
 
 .btn:hover {
     color: #fff
 }
-/*Search bar text*/
+/*Search bar  text*/
 .input-text:focus {
     box-shadow: 0px 0px 0px;
     border-color: #8c1d40;
@@ -99,7 +97,6 @@ body, html {
   color: #fff;
   border-color: #8c1d40;
   background-color: #8c1d40;
-   box-shadow: 0 0px 2px rgb(0 0 0 / 30%);
 }
 
 .btn-outline-warning:hover {
@@ -164,43 +161,6 @@ body, html {
 #infoModal .modal-body{
   height: 80vh;
   overflow-y: auto;
-}
-
-#infoModal {
-  border-radius: 0px;
-  z-index: 999999999999999999999999999999999999999999999999999999999;
-}
-
-#viewerModal {
-  z-index: 999999999999999999999999999999999999999999999999999999999;
-}
-
-#advancedModal {
-  z-index: 999999999999999999999999999999999999999999999999999999999;
-}
-#drawers-table .tabulator-selected {
-  background-color: #D23153 !important;
-}
-
-/* Custom scrollbar */
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
 }
 
 /*.modal {
@@ -274,10 +234,6 @@ body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popu
     padding-top: 0;
 }
 
-.esri-popup__header-title {
-  text-align: left;
-}
-
 h7 {
   font-size: 12px;
 }
@@ -295,40 +251,8 @@ h7 {
 
 #image {
   display: none;
-}
-
-#maxResults {
-  color: #8c1d40;
-  font-size: 12px;
 } 
 
-#results {
-  color: white;
-  font-size: 16px;
-}
-
-#drawerTitle {
-  color: white;
-  font-size: 16px;
-}
-
-.previous {
-  background-color: white;
-  color: #6aa23f;  
-  float: left;  
-}
-
-.next {
-  background-color: white;
-  color: #6aa23f;
-  float: right;
-}
-
-.round {
-  border-radius: 0;
-  padding: 2px;
-  border: solid 1px #6aa23f;
-}
 @media only screen and (max-width: 600px) {
   body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container {
     width: 100%;       
@@ -336,84 +260,21 @@ h7 {
 
   #search {
     width: 50%;
-    border-radius: 5px 0px 0px 5px;   
+    border-radius: 5px 0px 0px 5px;
   }
 
   #searchtype {  
     z-index: 2;
     width: 15%;
-    border-radius: .0rem .0rem .0rem .0rem;    
+    border-radius: .0rem .0rem .0rem .0rem;
   }
 
   .container {
     position: absolute;
     width: 90%;
-    top: 15px;
-    left: 45px;    
+    top: 71px;
+    left: 45px;
   }  
-}
-
-/* The sidebar menu */
-.sidebar {
-  height: 100%; /* 100% Full-height */
-  width: 0; /* 0 width - change this with JavaScript */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Stay on top */
-  top: 0;
-  left: 0;
-  background-color: #292929; 
-  overflow-x: hidden; /* Disable horizontal scroll */
-  overflow-y: hidden;
-  padding-top: 40px; /*60px Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
-  margin-top: 56px;
-  overflow-wrap: break-word;
-}
-
-/* The sidebar links */
-.sidebar a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-/* When you mouse over the navigation links, change their color */
-.sidebar a:hover {
-  color: #f1f1f1;
-}
-
-/* Position and style the close button (top right corner) */
-.sidebar .closebtn {
-  position: absolute;
-  top: 0;
-  right: 5px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
-/* The button used to open the sidebar */
-.openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-}
-
-.openbtn:hover {
-  background-color: #444;
-}
-
-
-
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-#viewDiv {
-  transition: margin-left .5s; /* If you want a transition effect */
-  padding: 0px;  
 }
 
 @media only screen and (max-device-width: 1200px){
@@ -421,7 +282,7 @@ h7 {
 .container {
     position: absolute;
     width: 90%;
-    top: 15px;
+    top: 71px;
     left: 45px;
 }
 }
