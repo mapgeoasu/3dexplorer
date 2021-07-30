@@ -13,7 +13,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
   // Service URL for the maps_master table on AGOL    
   var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/maps_master/FeatureServer/0/";
   // Title for the Cabinets Layer
-  var cabTitle = "Map Cabinets Update - Map Cabinets";
+  var cabTitle = "Cabinets Shelves";
   // Title for the Bookshelves layer
   var shelfTitle = "Bookshelves Update - Bookshelves";       
  
@@ -115,180 +115,141 @@ function closeNav() {
   //document.getElementsByClassName("container")[0].style.left = "3%";
 }
 
-  // when a row in the table is seleted or queried, get its attributes.
-  // populate a new popup with this information 
-  function getRowData(row) {                       
-    //view.popup.close();
-    var drawerId = row._row.data.attributes.LOC_ID;  
-    var itemTitle = row._row.data.attributes.TITLE;
-    var itemDate = row._row.data.attributes.DATE;
-    var itemAuthor = row._row.data.attributes.AUTHOR;
-    var itemLink = row._row.data.attributes.CATALOG_LINK;
-    var itemPub =  row._row.data.attributes.PUBLISHER;
-    var itemScale =  row._row.data.attributes.SCALE;
-    var itemNum =  row._row.data.attributes.CALL_NUM;
-    var thumbUrl = row._row.data.attributes.THUMB_URL;
+// when a row in the table is seleted or queried, get its attributes.
+// populate a new popup with this information 
+function getRowData(row) {                       
+  //view.popup.close();
+  var drawerId = row._row.data.attributes.LOC_ID;  
+  var itemTitle = row._row.data.attributes.TITLE;
+  var itemDate = row._row.data.attributes.DATE;
+  var itemAuthor = row._row.data.attributes.AUTHOR;
+  var itemLink = row._row.data.attributes.CATALOG_LINK;
+  var itemPub =  row._row.data.attributes.PUBLISHER;
+  var itemScale =  row._row.data.attributes.SCALE;
+  var itemNum =  row._row.data.attributes.CALL_NUM;
+  var thumbUrl = row._row.data.attributes.THUMB_URL;
 
-    // Truncate the popup title
-    if (itemTitle.length > 40) {
-      var truncTitle = (itemTitle.substring(0, 40) + "...");
-    } else {
-      var truncTitle = itemTitle;
-    }
-        
-    // if the item has no scale leave it blank
-    if (itemScale == '' || itemScale == null) {
-      itemScale = " ";   
-    }   
-
-    if (drawerId < 241) {
-      // Get the cabinets layer from webScene
-      var cabLayer = webscene.allLayers.filter(function(elem) {
-        return elem.title === cabTitle;
-      }).items[0];        
-      var query = cabLayer.createQuery();
-      // Query the cabinets layer for the LOC_ID
-      query.where = "LOC_ID =" + "'" + drawerId + "'";
-      query.returnGeometry = true;               
-      query.returnZ = true;
-      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
-      cabLayer.queryFeatures(query)
-        .then(function(response){
-           // returns a feature set with features containing an OBJECTID
-           var objectID = response.features[0].attributes.OBJECTID;
-           //var cabId = response.features[0].attributes.CAB_ID;
-           var zmin = (response.features[0].attributes.Z_Min / 3.28);
-           var zmax = (response.features[0].attributes.Z_Max / 3.28);
-          
-           view.whenLayerView(cabLayer).then(function(layerView) {
-              var queryExtent = new Query({
-                objectIds: [objectID]
-              });
-              // zoom to the extent of drawer that is clicked on the table  
-              var new_ext = new Extent({
-                xmin: response.features[0].geometry.extent.xmin, 
-                ymin: response.features[0].geometry.extent.ymin, 
-                zmin: zmin,
-                xmax: response.features[0].geometry.extent.xmax, 
-                ymax: response.features[0].geometry.extent.ymax,
-                zmax: zmax,                        
-                spatialReference: { wkid: 4326 }
-              });
-
-              cabLayer.queryExtent(queryExtent).then(function(result) {
-                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
-              });
-
-              // reduce popup size
-              $(function() {            
-                  $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
-                });
-              
-              // if any, remove the previous highlights
-              if (highlight) {
-                highlight.remove();
-              }
-              // highlight the feature with the returned objectId
-              highlight = layerView.highlight([objectID]);
-              })
-              // check if the clicked record has an existing image
-              if (thumbUrl !== '' && thumbUrl !== null) {
-                // change the image URL and title to display in the viewer
-                document.getElementById('image').src=thumbUrl;
-                document.getElementById('image').alt=itemTitle;
-                viewer.update();                
-                
-                // open a popup at the drawer location of the selected map
-                view.popup.open({                  
-                  // Set the popup's title to the coordinates of the clicked location
-                  title: "<h6><b>" + truncTitle,  
-                  content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
-                  "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
-                  itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
-                  "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
-                  "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
-                  "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
-                  // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
-                  location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
-                  actions: []      
-                });                   
-              } else {
-                view.popup.open({
-                  // Set the popup's title to the coordinates of the clicked location
-                  title: "<h6><b>" + truncTitle,   
-                  content: "<b>Title: </b>" + itemTitle +
-                  "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
-                  itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
-                  "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
-                  "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
-                  "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
-                  //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
-                  location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
-                  actions: []      
-                });                 
-              }
-         });           
-  } else if (drawerId >= 241) {
-    // Get the cabinets layer from webScene
-      var shelfLayer = webscene.allLayers.filter(function(elem) {
-        return elem.title === shelfTitle;
-      }).items[0];        
-      var query = shelfLayer.createQuery();
-      // Query the cabinets layer for the LOC_ID
-      query.where = "LOC_ID =" + "'" + drawerId + "'";
-      query.returnGeometry = true;               
-      query.returnZ = true;
-      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
-      shelfLayer.queryFeatures(query)
-        .then(function(response){
-           // returns a feature set with features containing an OBJECTID
-           var objectID = response.features[0].attributes.OBJECTID;
-           //var cabId = response.features[0].attributes.CAB_ID;
-           var zmin = (response.features[0].attributes.Z_Min / 3.28);
-           var zmax = (response.features[0].attributes.Z_Max / 3.28);
-          
-           view.whenLayerView(shelfLayer).then(function(layerView) {
-              var queryExtent = new Query({
-                objectIds: [objectID]
-              });
-              // zoom to the extent of drawer that is clicked on the table  
-              var new_ext = new Extent({
-                xmin: response.features[0].geometry.extent.xmin, 
-                ymin: response.features[0].geometry.extent.ymin, 
-                zmin: zmin,
-                xmax: response.features[0].geometry.extent.xmax, 
-                ymax: response.features[0].geometry.extent.ymax,
-                zmax: zmax,                        
-                spatialReference: { wkid: 4326 }
-              });
-
-              shelfLayer.queryExtent(queryExtent).then(function(result) {
-                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
-              });
-              
-              // if any, remove the previous highlights
-              if (highlight) {
-                highlight.remove();
-              }
-              // highlight the feature with the returned objectId
-              highlight = layerView.highlight([objectID]);
-              })
-              // open a popup at the drawer location of the selected map
-              view.popup.open({
-                // Set the popup's title to the coordinates of the clicked location                          
-                title: "<h6><b>Shelf ID: "  + drawerId + "</b>", 
-                content: "The item " + '"<b>' + row._row.data.attributes.TITLE + '</b>" ' + "is located in Shelf " + drawerId + ".",
-                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location  
-                actions: [returnToAction]      
-              });
-         });
-  }  
+  // Truncate the popup title
+  if (itemTitle.length > 40) {
+    var truncTitle = (itemTitle.substring(0, 40) + "...");
+  } else {
+    var truncTitle = itemTitle;
   }
+      
+  // if the item has no scale leave it blank
+  if (itemScale == '' || itemScale == null) {
+    itemScale = " ";   
+  }
+
+  // Get the cabinets layer from webScene
+  var cabLayer = webscene.allLayers.filter(function(elem) {
+    return elem.title === cabTitle;
+  }).items[0];        
+  var query = cabLayer.createQuery();
+  // Query the cabinets layer for the LOC_ID
+  query.where = "LOC_ID =" + "'" + drawerId + "'";
+  query.returnGeometry = true;               
+  query.returnZ = true;
+  query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+  cabLayer.queryFeatures(query)
+    .then(function(response){
+       // returns a feature set with features containing an OBJECTID
+       var objectID = response.features[0].attributes.OBJECTID;
+       //var cabId = response.features[0].attributes.CAB_ID;
+       var zmin = (response.features[0].attributes.Z_Min / 3.28);
+       var zmax = (response.features[0].attributes.Z_Max / 3.28);
+      
+       view.whenLayerView(cabLayer).then(function(layerView) {
+          var queryExtent = new Query({
+            objectIds: [objectID]
+          });
+          // zoom to the extent of drawer that is clicked on the table  
+          var new_ext = new Extent({
+            xmin: response.features[0].geometry.extent.xmin, 
+            ymin: response.features[0].geometry.extent.ymin, 
+            zmin: zmin,
+            xmax: response.features[0].geometry.extent.xmax, 
+            ymax: response.features[0].geometry.extent.ymax,
+            zmax: zmax,                        
+            spatialReference: { wkid: 4326 }
+          });
+
+          cabLayer.queryExtent(queryExtent).then(function(result) {
+            view.goTo(new_ext.expand(4), { speedFactor: 0.5 });                        
+          });
+
+          // reduce popup size
+          $(function() {            
+              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+          });
+          
+          // if any, remove the previous highlights
+          if (highlight) {
+            highlight.remove();
+          }
+          // highlight the feature with the returned objectId
+          highlight = layerView.highlight([objectID]);
+          })
+          // check if the clicked record has an existing image
+          if (thumbUrl !== '' && thumbUrl !== null) {
+            // change the image URL and title to display in the viewer
+            document.getElementById('image').src=thumbUrl;
+            document.getElementById('image').alt=itemTitle;
+            viewer.update();                
+            
+            // open a popup at the drawer location of the selected map
+            view.popup.open({                  
+              // Set the popup's title to the coordinates of the clicked location
+              title: "<h6><b>" + truncTitle,  
+              content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
+              "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
+              itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
+              "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
+              "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
+              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+              // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
+              location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+              actions: []      
+            });                   
+          } else {
+            view.popup.open({
+              // Set the popup's title to the coordinates of the clicked location
+              title: "<h6><b>" + truncTitle,   
+              content: "<b>Title: </b>" + itemTitle +
+              "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
+              itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
+              "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
+              "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
+              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+              //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
+              location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
+              actions: []      
+            });                 
+          }
+     });    
+}
 
   // when the user clicks the thumbnail, open the viewer
   $(document).on('click','.thumbdisplay', function(){    
     viewer.show();
   });
+
+  // listen for changes to the sidebar element
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutationRecord) {
+      // if the sidebar opens, hide the view item list button      
+      if (mutationRecord.target.style.width == "25%") {
+        view.popup.viewModel.allActions.getItemAt(0).visible = false;
+        $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');        
+      } else {
+        view.popup.viewModel.allActions.getItemAt(0).visible = true; 
+        $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px'); 
+      }       
+    });    
+  });
+
+  var target = document.getElementById('mySidebar');
+  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
 
   // when the user clicks the previous button, show the previous record in the table
   $(document).on('click','.previous', function(){    
@@ -354,17 +315,17 @@ function closeNav() {
       columns:[
           {title:"Title", field:"attributes.TITLE", width: 500},
           {title:"Author", field:"attributes.AUTHOR", width: 300, visible:false},
-          {title:"Publisher", field:"attributes.PUBLISHER", width: 300},
+          {title:"Publisher", field:"attributes.PUBLISHER", width: 300, visible: false},
           {title:"Date", field:"attributes.DATE", width: 150},
           {title:"Scale", field:"attributes.SCALE", width: 120, visible:false},
-          //{title:"Catalog Item", field:"attributes.CATALOG_LINK", width: 400, formatter:"link", formatterParams:{                   
-           //  target:"_blank",
-          //}},
+          {title:"Catalog Item", field:"attributes.CATALOG_LINK", width: 400, formatter:"link", visible: false,
+          formatterParams:{ target:"_blank"}},
           {title:"Call Number", field:"attributes.CALL_NUM", width: 250, visible:false},                                
           {title:"Language", field:"attributes.LANG", width: 150, visible:false},
           {title:"Theme", field:"attributes.THEME", width: 150, visible:false},
           {title:"Region / Geography", field:"attributes.GEO", width: 200, visible:false},                
-          {title:"Drawer ID", field:"attributes.LOC_ID", width: 120, visible:false},                         
+          {title:"Drawer ID", field:"attributes.LOC_ID", width: 120, visible:false},   
+          {title:"Location", field:"attributes.LOC_TYPE", width: 120, visible:false},                      
       ],            
       // Detect when someone clicks on a row in the table
       rowClick:function(e, row){ 
@@ -373,7 +334,15 @@ function closeNav() {
         $('#drawerModal').modal('hide');        
         // when a row in the table is clicked call the getRowData function
         getRowData(row);   
-      }    
+      },
+      groupHeader:function(value, count, data, group){
+        console.log(data);
+        if (value < 241) {
+          return "Drawer: " + value + "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>"; 
+        } else {
+          return "Shelf: " + value + "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>";
+        }
+      },    
   });        
   
   //trigger download of mapdata.csv file
@@ -390,18 +359,11 @@ function closeNav() {
       return elem.title === cabTitle;
     }).items[0];
     // get the LOC_ID and DRAWER_TITLE  
-    cabLayer.outFields = ['LOC_ID', 'DRAWER_TITLE'];
-
-    // Get the bookshelves layer from webScene
-    var shelfLayer = webscene.allLayers.filter(function(elem) {
-      return elem.title === shelfTitle;
-    }).items[0];
-    // get the LOC_ID and DRAWER_TITLE  
-    shelfLayer.outFields = ['LOC_ID'];
+    cabLayer.outFields = ['LOC_ID', 'DRAWER_TITLE'];   
 
     // retrieve the layer view of the scene layer
-    view.whenLayerView(cabLayer, shelfLayer)
-      .then(function(cabLayerView, shelfLayerView) {
+    view.whenLayerView(cabLayer)
+      .then(function(cabLayerView) {
         view.on("click", function(event) { 
           // if any, remove the previous popup actions
           view.popup.actions = [];
@@ -410,9 +372,9 @@ function closeNav() {
             highlight.remove();
           }
 
-          view.hitTest(event, { include: [cabLayer, shelfLayer] }).then(function(response) {            
+          view.hitTest(event, { include: [cabLayer] }).then(function(response) {            
             // check if a feature is returned from the cabLayer
-            if (response.results.length) {                                 
+            if (response.results.length) {                          
               $(".esri-icon-table").hide();
               $("#drawerTitle").hide();
               const graphic = response.results[0].graphic;
@@ -429,50 +391,63 @@ function closeNav() {
                       type: "GET",    
                       success: function(data) {
                        if (data.features.length <= 0) {
-                        cabLayer.popupTemplate = {
-                            title: "<h6>Drawer ID: " + drawerId,
-                            content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"                         
-                         };
-                         shelfLayer.popupTemplate = {
-                            title: "<h6>Shelf ID: " + drawerId,
-                            content: "Description: " + "N/A" + "<br><br>Inventory coming soon!"                         
-                         };
-                         //$('#noDataModal').modal('show');
-                         //view.popup.close();
+                        if (drawerId < 241) {
+                          cabLayer.popupTemplate = {
+                              title: "<h6>Drawer ID: " + drawerId,
+                              content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"                         
+                           };    
+                         } else {
+                          cabLayer.popupTemplate = {
+                              title: "<h6>Shelf ID: " + drawerId,
+                              content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
+                          } 
+                        }
+                         table.clearData();
+                         $('#results').html("Inventory coming soon!");                         
                        } else {
                          // show the cabinet info div
                          $("#drawerTitle").show(); 
                          $("#maxResults").hide();
                          console.log(data.features);
                          // Get the features from the REST API 
-                         features = data.features;     
-                         //$('#drawerModal').modal('show');                            
+                         features = data.features;                                                    
                          var numResults = data.features.length;
                          var startCallNo = data.features[0].attributes.CALL_NUM;
                          var endCallNo = data.features[numResults - 1].attributes.CALL_NUM;   
-                         var shelfName = data.features[0].attributes.LOC_TYPE;  
+                         var shelfName = data.features[0].attributes.LOC_TYPE; 
+                          
+                         console.log(data.features[0].Feature_Type); 
                          if (drawerId >= 241) {
                             $('#drawerTitle').html("Shelf " + drawerId + ": " + shelfName);
+                            cabLayer.popupTemplate = {
+                            title: "<b><h6>Shelf ID: " + drawerId + "</b>" ,
+                            content: "<h6>Description: "  + drawerTitle + "<br><br> Item Count: " + numResults +
+                            "<br><br>Range: " + startCallNo + " - " + endCallNo,           
+                            actions: [tableViewerAction] // adds the custom popup action
+                            };            
                           } else {
                             $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
-                          }                                        
-                         cabLayer.popupTemplate = {
+                            cabLayer.popupTemplate = {
                             title: "<b><h6>Drawer ID: " + drawerId + "</b>" ,
                             content: "<h6>Description: "  + drawerTitle + "<br><br> Item Count: " + numResults +
                             "<br><br>Range: " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
-                         };
-
-                         shelfLayer.popupTemplate = {
-                            title: "<b><h6>Shelf ID: " + drawerId + "</b>" ,
-                            content: "<h6>Description: "  + shelfName + "<br><br> Item Count: " + numResults +
-                            "<br><br>Range: " + startCallNo + " - " + endCallNo,           
-                            actions: [tableViewerAction] // adds the custom popup action
-                         };
+                            };            
+                          }                                    
 
                          $('#results').html(" | Item count: " + numResults + " items");  
                          // clear any existing data in the table upon a new drawer click
-                         table.clearData();                             
+                         table.clearData();
+                         // if the sidebar is open, remove the 'view item list' button   
+                         if (document.getElementById('mySidebar').style.width == "25%") {
+                          view.popup.viewModel.allActions.getItemAt(0).visible = false;
+                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');
+                           // set the table data to the results of the query
+                           table.setData(features);
+                         } else {
+                          view.popup.viewModel.allActions.getItemAt(0).visible = true; 
+                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '56px');
+                         }                      
                        }
                       }
               });   
@@ -487,11 +462,11 @@ function closeNav() {
     // Watch for when features are selected
     view.popup.watch("selectedFeature", function (graphic) {
       if (graphic) {
-        if (graphic.layer.title == cabTitle || graphic.layer.title == shelfTitle) {
+        if (graphic.layer.title == cabTitle) {
           $(function() {            
           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px');                 
         });
-        } else  if (graphic.layer.title != cabTitle || graphic.layer.title != shelfTitle) {
+        } else  if (graphic.layer.title != cabTitle) {
           $(function() {            
           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
         });
@@ -502,12 +477,24 @@ function closeNav() {
 
   function highLightDrawers (results) {
     var objectIds = [];
+
     results.forEach(function(result) {
-      var drawers = result.attributes.LOC_ID;      
+      // the result of the REST API Query
+      var drawers = result.attributes.LOC_ID;    
+      var titles = result.attributes.DRAWER_TITLE; 
       objectIds.push(drawers);
     });
 
+    var occurrences = { };
+    for (var i = 0, j = objectIds.length; i < j; i++) {
+       occurrences[objectIds[i]] = (occurrences[objectIds[i]] || 0) + 1;
+    }
+
+    console.log(occurrences);   
+
     var uniqueIds = [...new Set(objectIds)];
+    var recCount = results.length;
+    var drawerCount = uniqueIds.length;
     console.log(objectIds);
     console.log(uniqueIds);
     var drawerQuery = uniqueIds.join(" OR LOC_ID = ");
@@ -553,7 +540,7 @@ function closeNav() {
               });
 
               cabLayer.queryExtent(queryExtent).then(function(result) {
-                view.goTo(new_ext.expand(3), { speedFactor: 0.5 });                        
+                view.goTo(new_ext.expand(14), { speedFactor: 0.5 });                        
               });
               
               // if any, remove the previous highlights
@@ -566,10 +553,9 @@ function closeNav() {
               // open a popup at the drawer location of the selected map
               view.popup.open({
                 // Set the popup's title to the coordinates of the clicked location                          
-                title: "<h6><b>Search Results are located in XXXXX... test</b>", 
-               // content: "The item " + '"<b>' + row._row.data.attributes.TITLE + '</b>" ' + "is located in Shelf " + drawerId + ".",
-                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location  
-                actions: [returnToAction]      
+                title: "<h6><b>" + recCount + " items in " + drawerCount + " locations", 
+                content: "Results shown in the sidebar. Click any record for more information.",
+                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location                      
               });
          });
   }
@@ -605,13 +591,15 @@ function closeNav() {
                  if (numResults >= 2000) {
                    $("#maxResults").show();
                  } else {
-                  $("#maxResults").hide();
+                   $("#maxResults").hide();
                  }
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');                  
                  // Create a new table with the array of features 
                  table.setData(searchRes);
                  console.log(searchRes);
                  highLightDrawers(searchRes);
+                 table.setSort("attributes.LOC_ID", "asc")
+                 table.setGroupBy("attributes.LOC_ID");
                 }
               }
       });  
@@ -636,6 +624,7 @@ function closeNav() {
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');
                  // Create a new table with the array of features 
                  table.setData(searchRes);
+                 highLightDrawers(searchRes);
                 }
               }
       });  
@@ -910,7 +899,8 @@ function closeNav() {
               success: function(data) {
                 console.log(data);
                 var advancedRes = data.features;
-                table.setData(advancedRes);  
+                table.setData(advancedRes); 
+                highLightDrawers(advancedRes); 
                 var numResults = advancedRes.length;
                 if (numResults == 0) {
                   alert('The search returned no results. Please try different terms.');

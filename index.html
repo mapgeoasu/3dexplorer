@@ -41,12 +41,12 @@
 </nav>
 <div id="mySidebar" class="sidebar">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <center><div id="drawerTitle" style="display: inline-block;"></div>&nbsp;<div id="results" style="display: inline-block;"></div></h5>
-         <!--  <button type="button" class="btn btn-outline-success" id="download"><i class="fa fa-download" aria-hidden="true" title="Download table"></i> </button>&nbsp;&nbsp; --><div id="maxResults" style="display: inline-block;">*Searches limited to 2000 results</div></center>
+  <center><div id="drawerTitle" style="display: inline-block;"></div>&nbsp;<div id="results" style="display: inline-block;"></div></h5><div id="maxResults" style="display: inline-block;">*Searches limited to 2000 results</div></center>
   <div id="drawers-table"></div>
 </div>
     <div id="viewDiv">
-      <div class="container justify-content-center">
+     <!-- Search Bar -->
+    <div class="container justify-content-center">
     <div class="row">
         <div class="col-md-8">
             <div class="input-group mb-3"> <input type="text" class="form-control input-text" placeholder="Search items..." aria-label="Title Search" id="search" aria-describedby="basic-addon2" autocomplete="off">
@@ -62,29 +62,13 @@
 </div>
     </div> 
 <div>
+  <!-- Default Image for ViewerJS -->
   <img id="image" src="" alt="Picture">
-</div>  
-    <!-- Modal for the drawer/search table -->
-    <div class="modal" id="drawerModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document" style="position:absolute;bottom:0;margin:0;width:100%; max-width: none;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"><div id="drawerTitle" style="display: inline-block;"></div>&nbsp;<div id="results" style="display: inline-block;"></div></h5>
-          <button type="button" class="btn btn-outline-success" id="download"><i class="fa fa-download" aria-hidden="true" title="Download table"></i> </button>&nbsp;&nbsp;<div id="maxResults" style="display: inline-block;">*Searches limited to 2000 results</div>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          
-        </div>        
-      </div>
-    </div>
-</div>
+</div>     
 <!-- Modal for the 360 Panorama -->
 <div class="modal" id="viewerModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
+      <div class="modal-content rounded-0">
         <div class="modal-header">
           <h5 class="modal-title">Hub 360 Photo Viewer</h5> 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -92,15 +76,15 @@
         </button>         
         </div>
         <div class="modal-body">
-          <iframe class ="myFrame" width="760" height="400" allowfullscreen style="border-style:none;" src="https://cdn.pannellum.org/2.5/pannellum.htm#config=https://mapgeoasu.github.io/3dexplorer/tour.json&autoLoad=true"></iframe>          
+          <iframe class ="myFrame" width="760" height="400" allowfullscreen style="border-style:none;" src="https://cdn.pannellum.org/2.5/pannellum.htm#config=https://mapgeoasu.github.io/3dexplorer/tour.json&autoLoad=true"></iframe>
         </div>           
       </div>
     </div>
 </div>
-<!-- Modal for the advacned search -->
+<!-- Modal for the advanced search -->
 <div class="modal" tabindex="-1" role="dialog" id="advancedModal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content rounded-0">
       <div class="modal-header">
         <h5 class="modal-title">Advanced Search</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -168,11 +152,10 @@
     </div>
   </div>
 </div>
-
 <!-- Modal for the information box -->
 <div class="modal" tabindex="-1" role="dialog" id="infoModal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content rounded-0">
       <div class="modal-header">
         <h5 class="modal-title">About the 3D Explorer</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -193,14 +176,10 @@
         <p>Visit our web page to learn more about the ASU Library Map and Geospatial Hub: <a href="geospatial.asu.edu" target="_blank" rel="noopener noreferrer">geospatial.asu.edu</a>.</p>
 
         <p>Visit the Map and Geospatial Hub’s <a href="https://github.com/mapgeoasu" target="_blank" rel="noopener noreferrer">GitHub Page</a> to learn more about this project, including its code and credits.</p>
-      </div>
-      <!-- <div class="modal-footer">        
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
-      </div> -->
+      </div>      
     </div>
   </div>
 </div>
-<!-- Search Bar -->
 
 <script src="main.js"></script>
   </body>
