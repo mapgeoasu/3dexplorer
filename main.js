@@ -396,12 +396,12 @@ function getRowData(row) {
                        if (data.features.length <= 0) {
                         if (drawerId < 241) {
                           cabLayer.popupTemplate = {
-                              title: "<h6>Drawer ID: " + drawerId,
+                              title: "<h6>Drawer " + drawerId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"                         
                            };    
                          } else {
                           cabLayer.popupTemplate = {
-                              title: "<h6>Shelf ID: " + drawerId,
+                              title: "<h6>Shelf: " + drawerId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
                           } 
                         }
