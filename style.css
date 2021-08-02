@@ -157,6 +157,10 @@ body, html {
 .esri-widget {
   font-family: 'Montserrat', sans-serif;
 }
+
+.maroon {
+  color: #8c1d40;
+}
 /*Information Modal*/ 
 #infoModal .modal-dialog{
   overflow-y: initial !important
@@ -312,6 +316,8 @@ h7 {
 #drawerTitle {
   color: white;
   font-size: 16px;
+  max-width:300px;
+  word-wrap:break-word;
 }
 
 .previous {
@@ -366,7 +372,7 @@ h7 {
   background-color: #292929; 
   overflow-x: hidden; /* Disable horizontal scroll */
   overflow-y: hidden;
-  padding-top: 40px; /*60px Place content 60px from the top */
+  padding-top: 10px; /*60px Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
   margin-top: 56px;
   overflow-wrap: break-word;
@@ -390,10 +396,10 @@ h7 {
 /* Position and style the close button (top right corner) */
 .sidebar .closebtn {
   position: absolute;
-  top: 0;
+  top: -8;
   right: 5px;
   font-size: 36px;
-  margin-left: 50px;
+  margin-left: 50px;  
 }
 
 /* The button used to open the sidebar */
