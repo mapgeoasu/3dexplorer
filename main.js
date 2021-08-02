@@ -135,10 +135,13 @@ function getRowData(row) {
   } else {
     var truncTitle = itemTitle;
   }
-      
-  // if the item has no scale leave it blank
-  if (itemScale == '' || itemScale == null) {
-    itemScale = " ";   
+  var items = [itemScale, itemAuthor, itemDate, itemLink, itemPub, itemNum];
+
+  // if the item have no value leave them blank
+  for (var i = 0; i < items.length; i++) {
+    if (items[i] == '' || items[i] == null) {
+      items[i] = " ";   
+    }
   }
 
   // Get the cabinets layer from webScene
@@ -202,11 +205,11 @@ function getRowData(row) {
               // Set the popup's title to the coordinates of the clicked location
               title: "<h6><b>" + truncTitle,  
               content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
-              "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
-              itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
-              "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
-              "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
-              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+              "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
+              items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
+              "<br><br><b>Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + items[3] + 
+              "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
+              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
               // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
               location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
               actions: []      
@@ -216,11 +219,11 @@ function getRowData(row) {
               // Set the popup's title to the coordinates of the clicked location
               title: "<h6><b>" + truncTitle,   
               content: "<b>Title: </b>" + itemTitle +
-              "<br><br><b>Date: </b>" + itemDate + "<br><br><b>Author: </b>" + itemAuthor + "<br><br><b>Publisher: </b>" + 
-              itemPub + "<br><br><b>Scale: </b>" + itemScale + "<br><br><b>Call Number: </b>" + itemNum +
-              "<br><br><b>Physical Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + itemLink + 
-              "' target='_blank' rel='noopener noreferrer'>View ASU Library Catalog Record</a></center>" +
-              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer'>Request more information</a>",
+              "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
+              items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
+              "<br><br><b>Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + items[3] + 
+              "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
+              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
               //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
               location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
               actions: []      
@@ -338,9 +341,9 @@ function getRowData(row) {
       groupHeader:function(value, count, data, group){
         console.log(data);
         if (value < 241) {
-          return "Drawer: " + value + "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>"; 
+          return "Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>"; 
         } else {
-          return "Shelf: " + value + "<span style='color:#d00; margin-left:10px;'>(" + count + " items)</span>";
+          return "Shelf: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
         }
       },    
   });        
@@ -372,13 +375,13 @@ function getRowData(row) {
             highlight.remove();
           }
 
-          view.hitTest(event, { include: [cabLayer] }).then(function(response) {            
+          view.hitTest(event, { include: cabLayer }).then(function(response) {            
             // check if a feature is returned from the cabLayer
             if (response.results.length) {                          
               $(".esri-icon-table").hide();
               $("#drawerTitle").hide();
               const graphic = response.results[0].graphic;
-              console.log(graphic.attributes);
+              console.log(graphic);
               // Get the LOC_ID of the clicked drawer
               var drawerId = graphic.attributes.LOC_ID;
               var drawerTitle = graphic.attributes.DRAWER_TITLE;               
@@ -420,33 +423,34 @@ function getRowData(row) {
                          if (drawerId >= 241) {
                             $('#drawerTitle').html("Shelf " + drawerId + ": " + shelfName);
                             cabLayer.popupTemplate = {
-                            title: "<b><h6>Shelf ID: " + drawerId + "</b>" ,
-                            content: "<h6>Description: "  + drawerTitle + "<br><br> Item Count: " + numResults +
-                            "<br><br>Range: " + startCallNo + " - " + endCallNo,           
+                            title: "<b><h6>Shelf " + drawerId + "</b>",
+                            content: "<b><h7>Description:<b/> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
+                            "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
                           } else {
                             $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
                             cabLayer.popupTemplate = {
-                            title: "<b><h6>Drawer ID: " + drawerId + "</b>" ,
-                            content: "<h6>Description: "  + drawerTitle + "<br><br> Item Count: " + numResults +
-                            "<br><br>Range: " + startCallNo + " - " + endCallNo,           
+                            title: "<b><h6>Drawer " + drawerId + "</b>" ,
+                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br> <b>Item Count:</b> " + numResults +
+                            "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
                           }                                    
 
-                         $('#results').html(" | Item count: " + numResults + " items");  
+                         $('#results').html(numResults + " items");  
                          // clear any existing data in the table upon a new drawer click
                          table.clearData();
                          // if the sidebar is open, remove the 'view item list' button   
                          if (document.getElementById('mySidebar').style.width == "25%") {
                           view.popup.viewModel.allActions.getItemAt(0).visible = false;
-                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');
-                           // set the table data to the results of the query
-                           table.setData(features);
+                          $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');
+                          // set the table data to the results of the query
+                          table.setData(features);
+                          table.setGroupBy("attributes.LOC_ID");
                          } else {
                           view.popup.viewModel.allActions.getItemAt(0).visible = true; 
-                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '56px');
+                          $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '56px');
                          }                      
                        }
                       }
@@ -625,6 +629,8 @@ function getRowData(row) {
                  // Create a new table with the array of features 
                  table.setData(searchRes);
                  highLightDrawers(searchRes);
+                 table.setSort("attributes.LOC_ID", "asc")
+                 table.setGroupBy("attributes.LOC_ID");
                 }
               }
       });  
@@ -901,6 +907,8 @@ function getRowData(row) {
                 var advancedRes = data.features;
                 table.setData(advancedRes); 
                 highLightDrawers(advancedRes); 
+                table.setSort("attributes.LOC_ID", "asc")
+                table.setGroupBy("attributes.LOC_ID");
                 var numResults = advancedRes.length;
                 if (numResults == 0) {
                   alert('The search returned no results. Please try different terms.');
@@ -972,6 +980,7 @@ function getRowData(row) {
     if(event.action.id === "view-table"){
       openNav();
       table.setData(features);
+      table.setGroupBy("attributes.LOC_ID");
       table.redraw(true);
     }
     if(event.action.id === "return-to"){
