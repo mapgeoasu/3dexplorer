@@ -13,9 +13,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
   // Service URL for the maps_master table on AGOL    
   var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/maps_master/FeatureServer/0/";
   // Title for the Cabinets Layer
-  var cabTitle = "Cabinets Shelves";
-  // Title for the Bookshelves layer
-  var shelfTitle = "Bookshelves Update - Bookshelves";       
+  var cabTitle = "Cabinets Shelves";        
  
   // setup the variable for highlight with no value  
   var highlight = null;  
@@ -30,6 +28,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   var view = new SceneView({
     container: "viewDiv",
+   // qualityProfile: "high",
     highlightOptions: {
       color: [210, 49, 83] // color of the highlight when a feature is selected
     }, 
@@ -424,7 +423,7 @@ function getRowData(row) {
                             $('#drawerTitle').html("Shelf " + drawerId + ": " + shelfName);
                             cabLayer.popupTemplate = {
                             title: "<b><h6>Shelf " + drawerId + "</b>",
-                            content: "<b><h7>Description:<b/> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
+                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
@@ -432,7 +431,7 @@ function getRowData(row) {
                             $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
                             cabLayer.popupTemplate = {
                             title: "<b><h6>Drawer " + drawerId + "</b>" ,
-                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br> <b>Item Count:</b> " + numResults +
+                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            

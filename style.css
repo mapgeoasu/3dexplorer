@@ -99,7 +99,7 @@ body, html {
   color: #fff;
   border-color: #8c1d40;
   background-color: #8c1d40;
-   box-shadow: 0 0px 2px rgb(0 0 0 / 30%);
+  box-shadow: 0 0px 2px rgb(0 0 0 / 30%);  
 }
 
 .btn-outline-warning:hover {
