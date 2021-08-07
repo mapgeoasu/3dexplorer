@@ -98,6 +98,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
 function openNav() {
+  table.redraw(true);
   document.getElementById("mySidebar").style.width = "25%";
   document.getElementById("viewDiv").style.marginLeft = "25%";
   document.getElementById("viewDiv").style.width = "75%";
@@ -127,6 +128,11 @@ function getRowData(row) {
   var itemScale =  row._row.data.attributes.SCALE;
   var itemNum =  row._row.data.attributes.CALL_NUM;
   var thumbUrl = row._row.data.attributes.THUMB_URL;
+  var locName = "Drawer ";
+
+  if (drawerId >= 241) {
+    locName = "Shelf "
+  };
 
   // Truncate the popup title
   if (itemTitle.length > 40) {
@@ -152,14 +158,15 @@ function getRowData(row) {
   query.where = "LOC_ID =" + "'" + drawerId + "'";
   query.returnGeometry = true;               
   query.returnZ = true;
-  query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+  query.outFields = ["OBJECTID", "Shelf_ID", "LOC_ID", "Z_Min", "Z_Max"];
   cabLayer.queryFeatures(query)
     .then(function(response){
        // returns a feature set with features containing an OBJECTID
        var objectID = response.features[0].attributes.OBJECTID;
-       //var cabId = response.features[0].attributes.CAB_ID;
+       var shelfId = response.features[0].attributes.Shelf_ID;
+       var locId = response.features[0].attributes.LOC_ID;
        var zmin = (response.features[0].attributes.Z_Min / 3.28);
-       var zmax = (response.features[0].attributes.Z_Max / 3.28);
+       var zmax = (response.features[0].attributes.Z_Max / 3.28);       
       
        view.whenLayerView(cabLayer).then(function(layerView) {
           var queryExtent = new Query({
@@ -176,9 +183,52 @@ function getRowData(row) {
             spatialReference: { wkid: 4326 }
           });
 
-          cabLayer.queryExtent(queryExtent).then(function(result) {
-            view.goTo(new_ext.expand(4), { speedFactor: 0.5 });                        
-          });
+          cabLayer.queryExtent(queryExtent).then(function(result) {  
+            // change the camera position to correspond to the matching cabinet of the record            
+            if (drawerId >= 1 && drawerId <= 30 ) {              
+             view.goTo({
+              center: new_ext.expand(4),
+             // zoom: 13,
+              //tilt: 75,
+              heading: 358.54
+              }, {speedFactor: 0.5 });   
+            } else if (drawerId >= 31 && drawerId <= 60 ) {
+              view.goTo({
+                center: new_ext.expand(4),
+               // zoom: 13,
+                //tilt: 75,
+                heading: 170.25
+              }, {speedFactor: 0.5 });             
+            } else if (drawerId >= 61 && drawerId <= 120 ) {
+              view.goTo({
+                center: new_ext.expand(4),
+               // zoom: 13,
+                //tilt: 75,
+                heading: 94.93
+              }, {speedFactor: 0.5 });             
+            } else if (drawerId >= 121 && drawerId <= 180 ) {
+              view.goTo({
+                center: new_ext.expand(4),
+               // zoom: 13,
+                //tilt: 75,
+                heading: 92.12
+              }, {speedFactor: 0.5});             
+            } else if (drawerId >= 181 && drawerId <= 240 ) {
+              view.goTo({
+                center: new_ext.expand(4),
+               // zoom: 13,
+                tilt: 41.64,
+                heading: 5.61
+                }, {speedFactor: 0.5 });             
+            } else if (drawerId >= 241 && drawerId <= 252 ) {
+              view.goTo({
+                center: new_ext.expand(6),
+               // zoom: 13,
+                tilt: 38.31,
+                heading: 183.82
+                }, {speedFactor: 0.5 }); 
+            }
+          });          
 
           // reduce popup size
           $(function() {            
@@ -191,7 +241,13 @@ function getRowData(row) {
           }
           // highlight the feature with the returned objectId
           highlight = layerView.highlight([objectID]);
-          })
+          })    
+
+          // If the record is located in a bookshelf, use the shelf #
+          if (locId >= 241) {
+            locId = shelfId;
+          } 
+
           // check if the clicked record has an existing image
           if (thumbUrl !== '' && thumbUrl !== null) {
             // change the image URL and title to display in the viewer
@@ -206,7 +262,7 @@ function getRowData(row) {
               content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
               "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
               items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
-              "<br><br><b>Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + items[3] + 
+              "<br><br><b>Location: </b>" + locName + locId + "<br><br><center><a href=" + "'" + items[3] + 
               "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
               "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
               // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
@@ -220,7 +276,7 @@ function getRowData(row) {
               content: "<b>Title: </b>" + itemTitle +
               "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
               items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
-              "<br><br><b>Location: </b>Drawer " + drawerId + "<br><br><center><a href=" + "'" + items[3] + 
+              "<br><br><b>Location: </b>" + locName + locId + "<br><br><center><a href=" + "'" + items[3] + 
               "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
               "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
               //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
@@ -337,11 +393,35 @@ function getRowData(row) {
         // when a row in the table is clicked call the getRowData function
         getRowData(row);   
       },
-      groupHeader:function(value, count, data, group){
-        console.log(data);
+      groupHeader:function(value, count, data, group){        
         if (value < 241) {
           return "Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>"; 
-        } else {
+        } else {   
+          if (value == 241) {
+            value = 1;
+          } else if (value == 242) {
+            value = 2;
+          } else if (value == 243) {
+            value = 3;
+          } else if (value == 244) {
+            value = 4;
+          } else if (value == 245) {
+            value = 5;
+          } else if (value == 246) {
+            value = 6;
+          } else if (value == 247) {
+            value = 7;
+          } else if (value == 248) {
+            value = 8;
+          } else if (value == 249) {
+            value = 9;
+          } else if (value == 250) {
+            value = 10;
+          } else if (value == 251) {
+            value = 11;
+          } else if (value == 252) {
+            value = 12;
+          }     
           return "Shelf: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
         }
       },    
@@ -361,7 +441,7 @@ function getRowData(row) {
       return elem.title === cabTitle;
     }).items[0];
     // get the LOC_ID and DRAWER_TITLE  
-    cabLayer.outFields = ['LOC_ID', 'DRAWER_TITLE'];   
+    cabLayer.outFields = ['LOC_ID', 'DRAWER_TITLE', 'Shelf_ID'];   
 
     // retrieve the layer view of the scene layer
     view.whenLayerView(cabLayer)
@@ -374,7 +454,7 @@ function getRowData(row) {
             highlight.remove();
           }
 
-          view.hitTest(event, { include: cabLayer }).then(function(response) {            
+          view.hitTest(event, { include: cabLayer }).then(function(response) {                       
             // check if a feature is returned from the cabLayer
             if (response.results.length) {                          
               $(".esri-icon-table").hide();
@@ -383,7 +463,8 @@ function getRowData(row) {
               console.log(graphic);
               // Get the LOC_ID of the clicked drawer
               var drawerId = graphic.attributes.LOC_ID;
-              var drawerTitle = graphic.attributes.DRAWER_TITLE;               
+              var drawerTitle = graphic.attributes.DRAWER_TITLE;  
+              var shelfId = graphic.attributes.Shelf_ID;             
 
               console.log(drawerId);
               // Call to the ArcGIS REST API to retreive the maps in each drawer
@@ -400,7 +481,7 @@ function getRowData(row) {
                            };    
                          } else {
                           cabLayer.popupTemplate = {
-                              title: "<h6>Shelf: " + drawerId,
+                              title: "<h6>Shelf: " + shelfId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
                           } 
                         }
@@ -416,13 +497,13 @@ function getRowData(row) {
                          var numResults = data.features.length;
                          var startCallNo = data.features[0].attributes.CALL_NUM;
                          var endCallNo = data.features[numResults - 1].attributes.CALL_NUM;   
-                         var shelfName = data.features[0].attributes.LOC_TYPE; 
+                         var shelfName = data.features[0].attributes.LOC_TYPE;                          
                           
                          console.log(data.features[0].Feature_Type); 
                          if (drawerId >= 241) {
-                            $('#drawerTitle').html("Shelf " + drawerId + ": " + shelfName);
+                            $('#drawerTitle').html("Shelf " + shelfId + ": " + shelfName);
                             cabLayer.popupTemplate = {
-                            title: "<b><h6>Shelf " + drawerId + "</b>",
+                            title: "<b><h6>Shelf " + shelfId + "</b>",
                             content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
@@ -446,6 +527,7 @@ function getRowData(row) {
                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');
                           // set the table data to the results of the query
                           table.setData(features);
+                          table.redraw();
                           table.setGroupBy("attributes.LOC_ID");
                          } else {
                           view.popup.viewModel.allActions.getItemAt(0).visible = true; 
@@ -543,6 +625,8 @@ function getRowData(row) {
               });
 
               cabLayer.queryExtent(queryExtent).then(function(result) {
+
+                console.log(result);
                 view.goTo(new_ext.expand(14), { speedFactor: 0.5 });                        
               });
               
