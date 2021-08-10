@@ -130,9 +130,11 @@ function getRowData(row) {
   var thumbUrl = row._row.data.attributes.THUMB_URL;
   var locName = "Drawer ";
 
-  if (drawerId >= 241) {
+  if (drawerId >= 241 && drawerId < 253) {
     locName = "Shelf "
-  };
+  } else if (drawerId >= 253) {
+    locName - "File Cabinet Drawer "
+  }
 
   // Truncate the popup title
   if (itemTitle.length > 40) {
@@ -226,6 +228,13 @@ function getRowData(row) {
                // zoom: 13,
                 tilt: 38.31,
                 heading: 183.82
+                }, {speedFactor: 0.5 }); 
+            } else if (drawerId >= 253) {
+              view.goTo({
+                center: new_ext.expand(6),
+               // zoom: 13,
+                tilt: 62.73,
+                heading: 0.50
                 }, {speedFactor: 0.5 }); 
             }
           });          
@@ -396,7 +405,7 @@ function getRowData(row) {
       groupHeader:function(value, count, data, group){        
         if (value < 241) {
           return "Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>"; 
-        } else {   
+        } else if (value >= 241 && value < 253) {   
           if (value == 241) {
             value = 1;
           } else if (value == 242) {
@@ -423,6 +432,25 @@ function getRowData(row) {
             value = 12;
           }     
           return "Shelf: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
+        } else {
+          if (value == 253) {
+            value = 1;
+          } else if (value == 254) {
+            value = 2;
+          } else if (value == 255) {
+            value = 3;
+          } else if (value == 256) {
+            value = 4;
+          } else if (value == 257) {
+            value = 5;
+          } else if (value == 258) {
+            value = 6;
+          } else if (value == 259) {
+            value = 7;
+          } else if (value == 260) {
+            value = 8;
+          }
+          return "File Cabinet Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
         }
       },    
   });        
@@ -441,7 +469,7 @@ function getRowData(row) {
       return elem.title === cabTitle;
     }).items[0];
     // get the LOC_ID and DRAWER_TITLE  
-    cabLayer.outFields = ['LOC_ID', 'DRAWER_TITLE', 'Shelf_ID'];   
+    cabLayer.outFields = ['LOC_ID', 'LOC_TITLE', 'Shelf_ID', 'FC_DRAWER_ID'];   
 
     // retrieve the layer view of the scene layer
     view.whenLayerView(cabLayer)
@@ -463,8 +491,9 @@ function getRowData(row) {
               console.log(graphic);
               // Get the LOC_ID of the clicked drawer
               var drawerId = graphic.attributes.LOC_ID;
-              var drawerTitle = graphic.attributes.DRAWER_TITLE;  
-              var shelfId = graphic.attributes.Shelf_ID;             
+              var drawerTitle = graphic.attributes.LOC_TITLE;  
+              var shelfId = graphic.attributes.Shelf_ID;  
+              var fileCabId = graphic.attributes.FC_DRAWER_ID;           
 
               console.log(drawerId);
               // Call to the ArcGIS REST API to retreive the maps in each drawer
@@ -479,11 +508,16 @@ function getRowData(row) {
                               title: "<h6>Drawer " + drawerId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"                         
                            };    
-                         } else {
+                         } else if (drawerId >= 241 && drawerId < 253) {
                           cabLayer.popupTemplate = {
                               title: "<h6>Shelf: " + shelfId,
-                              content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
+                              content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"
                           } 
+                        } else {
+                          cabLayer.popupTemplate = {
+                            title: "<h6>File Cabinet Drawer : " + fileCabId,
+                            content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
+                          }
                         }
                          table.clearData();
                          $('#results').html("Inventory coming soon!");                         
@@ -500,7 +534,7 @@ function getRowData(row) {
                          var shelfName = data.features[0].attributes.LOC_TYPE;                          
                           
                          console.log(data.features[0].Feature_Type); 
-                         if (drawerId >= 241) {
+                         if (drawerId >= 241 && drawerId < 253) {
                             $('#drawerTitle').html("Shelf " + shelfId + ": " + shelfName);
                             cabLayer.popupTemplate = {
                             title: "<b><h6>Shelf " + shelfId + "</b>",
@@ -508,10 +542,18 @@ function getRowData(row) {
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
-                          } else {
+                          } else if (drawerId < 241) {
                             $('#drawerTitle').html("Drawer " + drawerId + ": " + drawerTitle);
                             cabLayer.popupTemplate = {
                             title: "<b><h6>Drawer " + drawerId + "</b>" ,
+                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
+                            "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
+                            actions: [tableViewerAction] // adds the custom popup action
+                            };            
+                          } else if (drawerId >= 253) {
+                            $('#drawerTitle').html("File Cabinet Drawer " + fileCabId + ": " + drawerTitle);
+                            cabLayer.popupTemplate = {
+                            title: "<b><h6>File Cabinet Drawer " + fileCabId + "</b>" ,
                             content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
