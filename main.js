@@ -530,6 +530,8 @@ function getRowData(row) {
                          $("#drawerTitle").show(); 
                          $("#maxResults").hide();
                          console.log(data.features);
+                         // Sort data array by MAP_ORDER value for call numbers
+                         data.features.sort(function(a, b){return a.attributes.MAP_ORDER-b.attributes.MAP_ORDER});
                          // Get the features from the REST API 
                          features = data.features;                                                    
                          var numResults = data.features.length;
