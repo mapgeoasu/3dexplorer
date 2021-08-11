@@ -11,7 +11,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 ) { 
   // Important variables for connecting the sceneview to the AGOL API  
   // Service URL for the maps_master table on AGOL    
-  var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/maps_master/FeatureServer/0/";
+  var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/item_table/FeatureServer/0/";
   // Title for the Cabinets Layer
   var cabTitle = "Cabinets_Shelves";        
  
@@ -392,8 +392,12 @@ function getRowData(row) {
           {title:"Theme", field:"attributes.THEME", width: 150, visible:false},
           {title:"Region / Geography", field:"attributes.GEO", width: 200, visible:false},                
           {title:"Drawer ID", field:"attributes.LOC_ID", width: 120, visible:false},   
-          {title:"Location", field:"attributes.LOC_TYPE", width: 120, visible:false},                      
-      ],            
+          {title:"Location", field:"attributes.LOC_TYPE", width: 120, visible:false},  
+          {title:"Order", field:"attributes.MAP_ORDER", width: 120, visible:false},                    
+      ],    
+      initialSort:[
+        {column:"attributes.MAP_ORDER", dir:"asc"}, //sort by this first        
+      ],        
       // Detect when someone clicks on a row in the table
       rowClick:function(e, row){ 
         view.popup.close();   
