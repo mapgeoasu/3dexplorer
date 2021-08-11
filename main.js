@@ -11,7 +11,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 ) { 
   // Important variables for connecting the sceneview to the AGOL API  
   // Service URL for the maps_master table on AGOL    
-  var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/item_table/FeatureServer/0/";
+  var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/maps_master/FeatureServer/0/";
   // Title for the Cabinets Layer
   var cabTitle = "Cabinets_Shelves";        
  
