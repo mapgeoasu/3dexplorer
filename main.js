@@ -131,9 +131,9 @@ function getRowData(row) {
   var locName = "Drawer ";
 
   if (drawerId >= 241 && drawerId < 253) {
-    locName = "Shelf "
+    locName = "Shelf ";
   } else if (drawerId >= 253) {
-    locName - "File Cabinet Drawer "
+    locName = "File Cabinet Drawer ";
   }
 
   // Truncate the popup title
@@ -160,12 +160,13 @@ function getRowData(row) {
   query.where = "LOC_ID =" + "'" + drawerId + "'";
   query.returnGeometry = true;               
   query.returnZ = true;
-  query.outFields = ["OBJECTID", "Shelf_ID", "LOC_ID", "Z_Min", "Z_Max"];
+  query.outFields = ["OBJECTID", "Shelf_ID", "FC_DRAWER_ID", "LOC_ID", "Z_Min", "Z_Max"];
   cabLayer.queryFeatures(query)
     .then(function(response){
        // returns a feature set with features containing an OBJECTID
        var objectID = response.features[0].attributes.OBJECTID;
        var shelfId = response.features[0].attributes.Shelf_ID;
+       var fileCabId = response.features[0].attributes.FC_DRAWER_ID;
        var locId = response.features[0].attributes.LOC_ID;
        var zmin = (response.features[0].attributes.Z_Min / 3.28);
        var zmax = (response.features[0].attributes.Z_Max / 3.28);       
@@ -253,10 +254,11 @@ function getRowData(row) {
           })    
 
           // If the record is located in a bookshelf, use the shelf #
-          if (locId >= 241) {
+          if (locId >= 241 && locId < 253) {
             locId = shelfId;
-          } 
-
+          } else if (locId >= 253 ) {
+            locId = fileCabId;
+          }
           // check if the clicked record has an existing image
           if (thumbUrl !== '' && thumbUrl !== null) {
             // change the image URL and title to display in the viewer
@@ -396,7 +398,7 @@ function getRowData(row) {
           {title:"Order", field:"attributes.MAP_ORDER", width: 120, visible:false},                    
       ],    
       initialSort:[
-        {column:"attributes.MAP_ORDER", dir:"asc"}, //sort by this first        
+        //{column:"attributes.MAP_ORDER", dir:"asc"}, //sort by this first        
       ],        
       // Detect when someone clicks on a row in the table
       rowClick:function(e, row){ 
@@ -577,6 +579,9 @@ function getRowData(row) {
                           table.setData(features);
                           table.redraw();
                           table.setGroupBy("attributes.LOC_ID");
+                          $(function() {
+                             table.setSort("attributes.MAP_ORDER", "asc");
+                          });                                
                          } else {
                           view.popup.viewModel.allActions.getItemAt(0).visible = true; 
                           $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '56px');
@@ -1110,8 +1115,11 @@ function getRowData(row) {
     // If the view image action is clicked, open the table modal
     if(event.action.id === "view-table"){
       openNav();
-      table.setData(features);
-      table.setGroupBy("attributes.LOC_ID");
+      table.setData(features);     
+      table.setGroupBy("attributes.LOC_ID"); 
+      $(function() {
+        table.setSort("attributes.MAP_ORDER", "asc");
+      });     
       table.redraw(true);
     }
     if(event.action.id === "return-to"){
