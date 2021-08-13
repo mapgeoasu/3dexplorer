@@ -312,7 +312,7 @@ function getRowData(row) {
         $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');        
       } else {
         view.popup.viewModel.allActions.getItemAt(0).visible = true; 
-        $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px'); 
+        $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px');        
       }       
     });    
   });
@@ -380,7 +380,8 @@ function getRowData(row) {
       responsiveLayout:"collapse",   
       layout:"fitDataFill",         
       selectable: 1,
-      clipboard:true, //enable clipboard functionality              
+      clipboard:true, //enable clipboard functionality 
+      placeholder:"Items for this drawer are coming soon!",                  
       columns:[
           {title:"Title", field:"attributes.TITLE", width: 500},
           {title:"Author", field:"attributes.AUTHOR", width: 300, visible:false},
@@ -740,6 +741,7 @@ function getRowData(row) {
                  highLightDrawers(searchRes);
                  table.setSort("attributes.LOC_ID", "asc")
                  table.setGroupBy("attributes.LOC_ID");
+                 table.redraw(true);
                 }
               }
       });  
