@@ -128,6 +128,8 @@ function getRowData(row) {
   var itemScale =  row._row.data.attributes.SCALE;
   var itemNum =  row._row.data.attributes.CALL_NUM;
   var thumbUrl = row._row.data.attributes.THUMB_URL;
+  var indexUrl = row._row.data.attributes.INDEX_URL;
+  var supUrl = row._row.data.attributes.SUP_URL;
   var locName = "Drawer ";
 
   if (drawerId >= 241 && drawerId < 253) {
@@ -142,6 +144,12 @@ function getRowData(row) {
   } else {
     var truncTitle = itemTitle;
   }
+//$( "catlink" ).load(function() { 
+  
+
+//});
+
+  // Add popup items to an array
   var items = [itemScale, itemAuthor, itemDate, itemLink, itemPub, itemNum];
 
   // if the item have no value leave them blank
@@ -273,9 +281,11 @@ function getRowData(row) {
               content: "<img src='" + thumbUrl + "' class='thumbdisplay'/><br><br><b>Title: </b>" + itemTitle +
               "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
               items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
-              "<br><br><b>Location: </b>" + locName + locId + "<br><br><center><a href=" + "'" + items[3] + 
-              "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
-              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
+              "<br><br><b>Location: </b>" + locName + locId + "<br><a href=" + "'" + itemLink + 
+              "' target='_blank' rel='noopener noreferrer' class='catlink'>View item in ASU Library catalog</a>" +
+              "<a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>" +
+              "<a href=" + "'" + indexUrl + "' target='_blank' rel='noopener noreferrer' class='indexlink'>View item in spatial index</a>" +
+              "<a href=" + "'" + supUrl + "' target='_blank' rel='noopener noreferrer' class='suplink'>Learn more about this item</a>",
               // "<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
               location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
               actions: []      
@@ -287,13 +297,39 @@ function getRowData(row) {
               content: "<b>Title: </b>" + itemTitle +
               "<br><br><b>Date: </b>" + items[2] + "<br><br><b>Author: </b>" + items[1] + "<br><br><b>Publisher: </b>" + 
               items[4] + "<br><br><b>Scale: </b>" + items[0] + "<br><br><b>Call Number: </b>" + items[5] +
-              "<br><br><b>Location: </b>" + locName + locId + "<br><br><center><a href=" + "'" + items[3] + 
-              "' target='_blank' rel='noopener noreferrer' class='maroon'>View ASU Library Catalog Record</a></center>" +
-              "<br><br><a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>",
+              "<br><br><b>Location: </b>" + locName + locId + "<br><a href=" + "'" + itemLink + 
+              "' target='_blank' rel='noopener noreferrer' class='catlink'>View item in ASU Library catalog</a>" +
+              "<a href='https://lib.asu.edu/geo/services' target='_blank' rel='noopener noreferrer' class='maroon'>Request more information</a>" +
+              "<a href=" + "'" + indexUrl + "' target='_blank' rel='noopener noreferrer' class='indexlink'>View item in spatial index</a>" +
+              "<a href=" + "'" + supUrl + "' target='_blank' rel='noopener noreferrer' class='suplink'>Learn more about this item</a>",
               //"<br><br><h6></b><a href='#' id='prev' class='previous round'>&#8249; Previous</a><a href='#' id='next' class='next round'>Next &#8250;</a>",
               location: response.features[0].geometry.centroid, // Set the location of the popup to the clicked location 
               actions: []      
             });                 
+          }
+          // if any popup links don't have valid URL values, remove them  
+          if (itemLink == "Not Found ") {
+            $(function() {             
+              $('.catlink').css({"display":"none"});
+            });
+          } else {
+              $('.catlink').css({"display":"block"});
+          }
+
+          if (indexUrl == null) {
+            $(function() {             
+              $('.indexlink').css({"display":"none"});
+            });
+          } else {
+              $('.indexlink').css({"display":"block"});
+          }
+
+          if (supUrl == null) {
+            $(function() {             
+              $('.suplink').css({"display":"none"});
+            });
+          } else {
+              $('.suplink').css({"display":"block"});
           }
      });    
 }
@@ -380,8 +416,7 @@ function getRowData(row) {
       responsiveLayout:"collapse",   
       layout:"fitDataFill",         
       selectable: 1,
-      clipboard:true, //enable clipboard functionality 
-      placeholder:"Items for this drawer are coming soon!",                  
+      clipboard:true, //enable clipboard functionality                        
       columns:[
           {title:"Title", field:"attributes.TITLE", width: 500},
           {title:"Author", field:"attributes.AUTHOR", width: 300, visible:false},
@@ -514,17 +549,26 @@ function getRowData(row) {
                           cabLayer.popupTemplate = {
                               title: "<h6>Drawer " + drawerId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"                         
-                           };    
+                           };  
+                          $(function() {            
+                              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+                          });  
                          } else if (drawerId >= 241 && drawerId < 253) {
                           cabLayer.popupTemplate = {
                               title: "<h6>Shelf: " + shelfId,
                               content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!"
                           } 
+                          $(function() {            
+                              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+                          });  
                         } else {
                           cabLayer.popupTemplate = {
                             title: "<h6>File Cabinet Drawer : " + fileCabId,
                             content: "Description: " + drawerTitle + "<br><br>Inventory coming soon!" 
                           }
+                          $(function() {            
+                              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+                          });  
                         }
                          table.clearData();
                          $('#results').html("Inventory coming soon!");                         
@@ -603,11 +647,11 @@ function getRowData(row) {
       if (graphic) {
         if (graphic.layer.title == cabTitle) {
           $(function() {            
-          $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px');                 
+              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '55px');                 
         });
         } else  if (graphic.layer.title != cabTitle) {
           $(function() {            
-          $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
+              $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
         });
         }              
       }
@@ -678,10 +722,13 @@ function getRowData(row) {
                 spatialReference: { wkid: 4326 }
               });
 
-              cabLayer.queryExtent(queryExtent).then(function(result) {
-
-                console.log(result);
-                view.goTo(new_ext.expand(14), { speedFactor: 0.5 });                        
+              cabLayer.queryExtent(queryExtent).then(function(result) {                
+                view.goTo({
+                center: new_ext.expand(14),
+               // zoom: 13,
+                tilt: 67.85,
+                heading: 38.82
+                }, {speedFactor: 0.5 });                        
               });
               
               // if any, remove the previous highlights
@@ -697,6 +744,10 @@ function getRowData(row) {
                 title: "<h6><b>" + recCount + " items in " + drawerCount + " locations", 
                 content: "Results shown in the sidebar. Click any record for more information.",
                 location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location                      
+              });              
+              // reduce the popup size  
+              $(function() {            
+                  $("body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container").css('padding-bottom', '0px');                
               });
          });
   }
@@ -729,7 +780,7 @@ function getRowData(row) {
                  openNav(); 
                  // Get the number of results of the search
                  var numResults = data.features.length;   
-                 if (numResults >= 2000) {
+                 if (numResults >= 1000) {
                    $("#maxResults").show();
                  } else {
                    $("#maxResults").hide();
@@ -945,7 +996,7 @@ function getRowData(row) {
   // Add element for the 360 photo viewer button using Esri widgets
   var viewerBtn = document.createElement('div');
   viewerBtn.className = "esri-icon-media esri-widget--button esri-widget esri-interactive";
-  viewerBtn.title = "view 360 hub image";
+  viewerBtn.title = "View 360 Hub photo";
   viewerBtn.addEventListener('click', function(event){
     // Toggle table
     $('#viewerModal').modal('show');

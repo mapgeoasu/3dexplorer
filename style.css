@@ -158,9 +158,32 @@ body, html {
   font-family: 'Montserrat', sans-serif;
 }
 
+/*popup links*/
 .maroon {
   color: #8c1d40;
+  display: block;
+  margin:1.1em 0;
 }
+
+.catlink {
+  color: #8c1d40;
+  display: block;
+  padding-top: 5px;
+  margin:.8em 0; 
+}
+
+.indexlink {
+  color: #8c1d40; 
+  display: block; 
+  margin:1.1em 0;
+}
+
+.suplink {
+  color: #8c1d40;  
+  display: block;
+  margin:1.1em 0;
+}
+
 /*Information Modal*/ 
 #infoModal .modal-dialog{
   overflow-y: initial !important
