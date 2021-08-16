@@ -327,7 +327,7 @@ h7 {
 }
 
 #maxResults {
-  color:  #D23153;
+  color:  #d9dde0;
   font-size: 12px;
 } 
 
@@ -360,6 +360,7 @@ h7 {
   padding: 2px;
   border: solid 1px #6aa23f;
 }
+
 @media only screen and (max-width: 600px) {
   body:not(.esriIsPhoneSize) #viewDiv .esri-popup.esri-popup--is-docked .esri-popup__main-container {
     width: 100%;       
