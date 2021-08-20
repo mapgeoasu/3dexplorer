@@ -71,8 +71,14 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     }
   };
 
-  // Show the infoModal on page load
-  $('#infoModal').modal('show');
+  // Show modal on page load
+  // Use cookies so it doesn't show up every time 
+  $(document).ready(function() {
+    if ($.cookie('pop') == null) {
+        $('#infoModal').modal('show');
+        $.cookie('pop', '7');
+    }
+   }); 
 
   // setup a new viewer to display the map scans
   var viewer = new Viewer(document.getElementById('image'), {
