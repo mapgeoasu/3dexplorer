@@ -24,8 +24,8 @@
 
         "exterior": {
             "title": "Hub Exterior",
-            "hfov": 90,
-            "yaw": 20,
+            "hfov": 190,
+            "yaw": 5,
             "type": "equirectangular",
             "panorama": "img/viewerimage2.jpg",
             "hotSpots": [
