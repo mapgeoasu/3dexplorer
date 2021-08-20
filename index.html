@@ -43,9 +43,10 @@
     </div>
 </nav>
 <div id="mySidebar" class="sidebar">
+  <div id="title">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <center><div id="drawerTitle" style="display: inline-block;"></div><br><div id="results" style="display: inline-block;"></div></h5>
-  <br><div id="maxResults" style="display: inline-block;">*Searches limited to 1000 results</div></center>
+  <br><div id="maxResults" style="display: inline-block;">*Searches limited to 1000 results</div></center></div>
   <div id="drawers-table"></div>
 </div>
     <div id="viewDiv">
@@ -80,7 +81,7 @@
         </button>         
         </div>
         <div class="modal-body">
-          <iframe class ="myFrame" width="760" height="400" allowfullscreen style="border-style:none;" src="https://cdn.pannellum.org/2.5/pannellum.htm#config=https://mapgeoasu.github.io/3dexplorer/tour.json&autoLoad=true"></iframe>
+          <iframe class ="myFrame" id="pano" width="760" height="400" allowfullscreen style="border-style:none;" src=""></iframe>
         </div>           
       </div>
     </div>
@@ -96,14 +97,26 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Complete fields for at least one criteria. Fields can be left blank.</p>
+        <p>Enter values for at least one search criterion. Fields can be left blank.</p>
         <form>
-   <div class="form-row">    
+   <div class="form-row">      
+    <div class="form-group col-md-6">  
+     <label for="format">Format</label>
+      <select id="format" class="form-control">
+        <option selected>Select Format</option>        
+      </select>
+    </div>  
     <div class="form-group col-md-6">
       <label for="theme">Theme</label>
       <select id="theme" class="form-control">
         <option selected>Select Theme</option>        
       </select>
+    </div>     
+  </div>     
+  <div class="form-row">    
+    <div class="form-group col-md-6">  
+      <label for="location">Region / Geography</label>
+      <input type="text" class="form-control" id="location" placeholder="Region / Geography">
     </div> 
     <div class="form-group col-md-6">
       <label for="language">Language</label>
@@ -111,19 +124,17 @@
         <option selected>Select Language</option>        
       </select>
     </div>
-   </div>
-  <div class="form-row">  
-    <div class="form-group col-md-6">  
-      <label for="location">Region / Geography</label>
-      <input type="text" class="form-control" id="location" placeholder="Region / Geography">
-    </div> 
-    <div class="form-group col-md-6">  
-     <label for="format">Format</label>
-      <select id="format" class="form-control">
-        <option selected>Select Format</option>        
-      </select>
-    </div>      
-  </div>          
+   </div>  
+   <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="startYear">Start Year</label>
+      <input type="text" class="form-control" id="startYear" placeholder="YYYY">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="endYear">End Year</label>
+      <input type="text" class="form-control" id="endYear" placeholder="YYYY">
+    </div>    
+  </div>
   <div class="form-row">  
     <div class="form-group col-md-6">  
       <label for="author">Author</label>
@@ -133,20 +144,7 @@
       <label for="publisher">Publisher</label>
       <input type="text" class="form-control" id="publisher" placeholder="Publisher">
     </div>      
-  </div>                
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="startYear">Start Year</label>
-      <input type="text" class="form-control" id="startYear" placeholder="Start Year">
-    </div>
-    <div class="form-group col-md-6">
-      <label for="endYear">End Year</label>
-      <input type="text" class="form-control" id="endYear" placeholder="End Year">
-    </div>
-    <p><h7>*year format should be YYYY (ie: 1850)</h7></p>
-  </div>
-  <div class="form-row">      
-  </div>            
+  </div>                 
 </form>
       </div>
       <div class="modal-footer">
@@ -156,35 +154,70 @@
     </div>
   </div>
 </div>
-<!-- Modal for the information box -->
+<!-- Begin Modal for the information box -->
 <div class="modal" tabindex="-1" role="dialog" id="infoModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">About the 3D Explorer</h5>
+        <h5 class="modal-title" style="font-weight: normal !important;">About the 3D Explorer</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>Welcome to the virtual Map and Geospatial Hub at ASU Library! We hold thousands of maps, aerial photographs, and other cartographic materials. Find us in the real world in Hayden Library, Room 334.</p>
-        <img src="img/controls.png" alt="nav controls" class="responsive"><br><br>
-        <p>Use the navigation controls to move through and reposition the 3D map scene. Tool tips indicate the function of each control.</p>
-        <img src="img/search.png" alt="search bar" class="responsive"><br><br>
-        <p>Search for cartographic materials by keyword or call number. Advanced Search applies multiple search criteria.<br><br>
-        <img src="img/drawers.png" alt="map drawers" class="responsive"><br>
-        <p>Select map cabinet drawers to view their contents. Select staff offices to learn more about our core team members. Select other features to learn more about the Hub workspace.</p>
-        <img src="img/viewer.png" alt="360 viewer" class="responsive"><br><br>
-        <p>View a 360 degree panorama photo of the Hub workspace.</p>
-
-        <p>Visit our web page to learn more about the ASU Library Map and Geospatial Hub: <a href="geospatial.asu.edu" target="_blank" rel="noopener noreferrer">geospatial.asu.edu</a>.</p>
-
-        <p>Visit the Map and Geospatial Hub’s <a href="https://github.com/mapgeoasu" target="_blank" rel="noopener noreferrer">GitHub Page</a> to learn more about this project, including its code and credits.</p>
+        <p>Welcome to the virtual <a href="https://geospatial.asu.edu/" class="infolink" target="_blank" rel="noopener noreferrer">Map and Geospatial Hub </a>at the Arizona State University Library!</p>
+        <p> Find us in the real world in ASU’s Hayden Library, Tempe, Arizona, USA.</p>
+        <img src="img/overview.png" alt="3d explorer" class="responsive"><br><br>
+        <p>Here at the Hub, we hold thousands of maps, aerial photographs, and other geographic information resources.</p> 
+        <p>Use this <b>3D Explorer</b> application to virtually explore the Hub space and its resources.</p>
+        <h5>Navigate the Scene</h5>
+        <p>Use the navigation controls to move through and reposition the interactive 3D map scene: zoom-in, zoom-out, pan, rotate, orient north.</p> 
+        <img src="img/navigation.png" alt="Navigation controls" class="responsive"><br><br>
+        <p>Use the “home” button to return to the default scene view. Use the “play” button to auto-rotate the scene; “pause” stops the rotation.</p>
+        <h5>Explore the Hub Space</h5>
+        <p>More information is available for nearly every object in the 3D model. Explore the Hub by selecting features in the space.</p> 
+        <p>For example, you can select any map cabinet drawer (or other storage features, such as shelves) to get a basic summary of the contents stored in that particular location.</p> 
+        <img src="img/selectdrawer.png" alt="Map drawers" class="responsive"><br><br>
+        <p>You can also select office locations to learn more about the staff members who occupy them, as well as how to get in touch.</p>
+        <img src="img/people.png" alt="Hub staff" class="responsive"><br><br>
+        <p>Or select globes to learn about and view photos of each one.</p>
+        <img src="img/globes.png" alt="Select globes" class="responsive"><br><br>
+        <p>Select other features in the workspace too, such as equipment and furniture.</p>
+        <img src="img/furniture.png" alt="Office furniture" class="responsive"><br><br>
+        <h5>Search for Resources by Attribute</h5>
+        <p>Search for maps, aerial photos, and other geographic information resources by attributes such as keyword or call number.</p> 
+        <img src="img/searchbar.png" alt="Search bar" class="responsive"><br><br>
+        <p>Use Advanced Search to apply multiple criteria to your search, such as format, theme, region, timeframe, etc.</p>
+        <img src="img/advanced.png" alt="Advanced search" class="responsive"><br><br>
+        <p>Item-level search results will appear in the sidebar. Throughout the scene, all locations containing the search results will be highlighted.</p>
+        <img src="img/results.png" alt="Search results" class="responsive"><br><br>
+        <p>The sidebar and pop-up box will indicate the total number of items identified by your search. The sidebar also groups and counts search results by each location.</p>
+        <h5>Find Resources by Location</h5>
+        <p>You can find resources by location too. Simply select any storage feature (drawer or shelf). The pop-up box will summarize the contents of that location.</p> 
+        <img src="img/find.png" alt="Find resources by location" class="responsive"><br><br>
+        <p>Select the “View Item List” button in the pop-up box to view a list of all items contained in that location.</p>
+        <img src="img/items.png" alt="View item list" class="responsive"><br><br>
+        <h5>View Resource Details</h5>
+        <p>In the sidebar, you’ll see a list of all items contained in a given location. Select any of the items in the sidebar to learn more details about it.</p>
+        <img src="img/sidebar.png" alt="Sidebar item list" class="responsive"><br><br>
+        <p>The pop-up box will reveal details such as the item’s title, publication date, author, publisher, cartographic scale, and library catalog record.</p> 
+        <p>When available, you will also find a link to view a particular item in a separate spatial index web map, or a link that describes the item in deeper context.</p> 
+        <p>A thumbnail image of the item will also appear in the pop-up box when available.</p>
+        <h5>View Resource Image</h5>
+        <p>If a thumbnail image is present, you can select it to view it more closely. Use the image viewer controls to rotate, flip, or otherwise manipulate the view of the image.</p>
+        <img src="img/viewer.png" alt="Image viewer" class="responsive"><br><br>
+        <h5>View the Hub Space</h5>
+        <p>Select the button with the image icon to view a 360 degree panorama photo of the space. Navigate within the panoramic viewer to move between images of the Hub interior and exterior.</p>
+        <img src="img/pano1.png" alt="Pano viewer icon" class="responsive"><br><br>
+        <img src="img/pano2.png" alt="Pano viewer" class="responsive"><br><br>
+        <h5>Learn More</h5>
+        <p>Visit our web page to learn more about the ASU Library Map and Geospatial Hub: <a href="https://geospatial.asu.edu" class="infolink" target="_blank" rel="noopener noreferrer">geospatial.asu.edu</a>.</p>
+        <p>Visit the Map and Geospatial Hub’s <a href="https://github.com/mapgeoasu" class="infolink" target="_blank" rel="noopener noreferrer">GitHub Page</a> to learn more about this project, including its source code and  production credits.</p>
       </div>      
     </div>
   </div>
 </div>
-
+<!-- End Modal for the information box -->
 <script src="main.js"></script>
   </body>
 </html>

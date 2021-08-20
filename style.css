@@ -2,6 +2,10 @@
 body, html {
   font-family: 'Montserrat', sans-serif !important;
 }
+
+.pnlm-title-box {
+   font-family: 'Montserrat', sans-serif !important;
+}
 /*Map container*/
 #viewDiv {
   position: absolute;
@@ -126,6 +130,12 @@ body, html {
   background-color: #8c1d40;
   border-color: #8c1d40;
 }
+
+#advancedBtn:hover {
+  border-color: #D23153;
+  background-color: #D23153;
+}
+
  /*Download button*/
 .btn-outline-success {
   display: inline-block;
@@ -158,6 +168,19 @@ body, html {
   font-family: 'Montserrat', sans-serif;
 }
 
+/*Infobox*/
+.infolink {
+  color: #8c1d40;
+}
+
+#infoModal img {
+  border: solid 1px black;
+}
+
+#infoModal h5 {
+  font-weight: bold;
+}
+
 /*popup links*/
 .maroon {
   color: #8c1d40;
@@ -184,6 +207,13 @@ body, html {
   margin:1.1em 0;
 }
 
+#title {
+  height: 7%;
+}
+
+#drawers-table {
+  height: calc(93% - 56px);
+}
 /*Information Modal*/ 
 #infoModal .modal-dialog{
   overflow-y: initial !important

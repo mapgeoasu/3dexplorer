@@ -28,7 +28,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   var view = new SceneView({
     container: "viewDiv",
-   // qualityProfile: "high",
+    qualityProfile: "high",
     highlightOptions: {
       color: [210, 49, 83] // color of the highlight when a feature is selected
     }, 
@@ -70,6 +70,9 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
       height: 10000
     }
   };
+
+  // Show the infoModal on page load
+  $('#infoModal').modal('show');
 
   // setup a new viewer to display the map scans
   var viewer = new Viewer(document.getElementById('image'), {
@@ -144,10 +147,6 @@ function getRowData(row) {
   } else {
     var truncTitle = itemTitle;
   }
-//$( "catlink" ).load(function() { 
-  
-
-//});
 
   // Add popup items to an array
   var items = [itemScale, itemAuthor, itemDate, itemLink, itemPub, itemNum];
@@ -308,7 +307,7 @@ function getRowData(row) {
             });                 
           }
           // if any popup links don't have valid URL values, remove them  
-          if (itemLink == "Not Found ") {
+          if (itemLink == "NOT FOUND") {
             $(function() {             
               $('.catlink').css({"display":"none"});
             });
@@ -354,65 +353,12 @@ function getRowData(row) {
   });
 
   var target = document.getElementById('mySidebar');
-  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
-
-  // when the user clicks the previous button, show the previous record in the table
-  $(document).on('click','.previous', function(){    
-    var selected = table.getSelectedRows();
-    console.log(selected);
-    var prevRow = selected[0].getPrevRow();
-    if (prevRow == false) {
-      console.log('false');
-    }
-    // deselect the previously selected row
-    selected[0].deselect();
-    // select the new row
-    prevRow.select();
-    getRowData(prevRow); 
-    var scroll = document.getElementsByClassName('tabulator-selected')[0];
-    scroll.scrollIntoView(); 
-  });
-  // when the user clicks the next button, show the next record in the table
-  $(document).on('click','.next', function(){    
-    var selected = table.getSelectedRows();
-    console.log(selected);
-    var nextRow = selected[0].getNextRow();
-    selected[0].deselect();
-    nextRow.select();
-    getRowData(nextRow);
-    var scroll = document.getElementsByClassName('tabulator-selected')[0];
-    scroll.scrollIntoView();
-    if (nextRow == false) {
-                  
-                  $('.next').css({"display":"none"});
-                
-                }
-    //table.scrollToRow(nextRow, "nearest", false);
-  });
-
-  $(document).on('click','.previous', function(){    
-  var selected = table.getSelectedRows();
-                //console.log(selected);
-                 var prevRow = selected[0].getPrevRow();
-                if (prevRow == false) {
-                  
-                  $('.previous').css({"display":"none"});
-                
-                }
-                });            
-
-  // use keyboard forward and back arrows to cycle through rows
-  $(document).keydown(function (e) {
-    if (event.keyCode == 37) {
-      $('.previous').click(); //on left arrow, click previous 
-    } else if (event.keyCode == 39) {
-      $('.next').click(); //on right arrow, click next
-    }
-  }); 
+  observer.observe(target, { attributes : true, attributeFilter : ['style'] });  
   
   // Creates a new table to hold our map attributes  
   var table = new Tabulator("#drawers-table", {             
-      height: "90%", 
+      //height: "88%", 
+      virtualDomBuffer: 1600,
       responsiveLayout:"collapse",   
       layout:"fitDataFill",         
       selectable: 1,
@@ -613,7 +559,16 @@ function getRowData(row) {
                             };            
                           }                                    
 
-                         $('#results').html(numResults + " items");  
+                         $('#results').html(numResults + " items"); 
+                         
+                        // Change the table header width according to text size 	
+						if (drawerTitle.length > 22) {
+							document.getElementById("title").style.height = "10%";
+							document.getElementById("drawers-table").style.height = "calc(90% - 56px)";
+						} else {
+							document.getElementById("title").style.height = "7%";
+							document.getElementById("drawers-table").style.height = "calc(93% - 56px)";
+						}
                          // clear any existing data in the table upon a new drawer click
                          table.clearData();
                          // if the sidebar is open, remove the 'view item list' button   
@@ -781,11 +736,23 @@ function getRowData(row) {
                  // Get the number of results of the search
                  var numResults = data.features.length;   
                  if (numResults >= 1000) {
+                 	document.getElementById("title").style.height = "10%";
+					document.getElementById("drawers-table").style.height = "calc(90% - 56px)";						
                    $("#maxResults").show();
                  } else {
+                 	document.getElementById("title").style.height = "7%";
+					document.getElementById("drawers-table").style.height = "calc(93% - 56px)";	
                    $("#maxResults").hide();
                  }
-                 $('#results').html(numResults + " items found for " + '"' + searchVal + '"');                  
+
+                 // Truncate the search string if needed
+				 if (searchVal.length > 25) {
+				 	var shortSearchVal = (searchVal.substring(0, 25) + "...");
+				 $('#results').html(numResults + " items found for " + '"' + shortSearchVal + '"'); 
+				 } else {
+				 	$('#results').html(numResults + " items found for " + '"' + searchVal + '"'); 
+				 }
+                                  
                  // Create a new table with the array of features 
                  table.setData(searchRes);
                  console.log(searchRes);
@@ -815,11 +782,14 @@ function getRowData(row) {
                  openNav();  
                  var numResults = data.features.length;    
                  $('#results').html(numResults + " items found for " + '"' + searchVal + '"');
+                 document.getElementById("title").style.height = "7%";
+				 document.getElementById("drawers-table").style.height = "calc(93% - 56px)";	
                  // Create a new table with the array of features 
                  table.setData(searchRes);
                  highLightDrawers(searchRes);
                  table.setSort("attributes.LOC_ID", "asc")
                  table.setGroupBy("attributes.LOC_ID");
+                 table.redraw(true);
                 }
               }
       });  
@@ -878,26 +848,7 @@ function getRowData(row) {
               });                     
             }
     }); 
-
-    /*// Populate the Location dropdown item
-   $.ajax({
-            dataType: 'json',
-            url: tableURL + 'query?where=1%3D1&objectIds=&time=&resultType=none&outFields=GEO&returnHiddenFields=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=true&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson',
-            type: "GET",    
-            success: function(data) {
-              var geoSelect = document.getElementById('location');
-              var features = data.features;    
-              Object.values(features).forEach(function(value) { 
-                if (value.attributes.GEO !== null) {                                         
-                  var geoVal = value.attributes.GEO;
-                  var geoOpt = document.createElement("option");
-                  geoOpt.textContent = geoVal;
-                  geoOpt.value = geoVal;
-                  geoSelect.appendChild(geoOpt); 
-                }                                        
-              });                     
-            }
-    });   */
+   
    // Populate the Language dropdown item
    $.ajax({
             dataType: 'json',
@@ -998,8 +949,9 @@ function getRowData(row) {
   viewerBtn.className = "esri-icon-media esri-widget--button esri-widget esri-interactive";
   viewerBtn.title = "View 360 Hub photo";
   viewerBtn.addEventListener('click', function(event){
-    // Toggle table
+    // Toggle panorama
     $('#viewerModal').modal('show');
+    document.getElementById("pano").src="https://cdn.pannellum.org/2.5/pannellum.htm#config=https://mapgeoasu.github.io/3dexplorer/tour.json&autoLoad=true";
   })
 
   // Add the button to the UI
@@ -1098,13 +1050,18 @@ function getRowData(row) {
                 highLightDrawers(advancedRes); 
                 table.setSort("attributes.LOC_ID", "asc")
                 table.setGroupBy("attributes.LOC_ID");
+                table.redraw(true);
                 var numResults = advancedRes.length;
                 if (numResults == 0) {
                   alert('The search returned no results. Please try different terms.');
                 } else {
-                  if (numResults >= 2000) {
+                  if (numResults >= 1000) {
+                  	document.getElementById("title").style.height = "10%";
+					document.getElementById("drawers-table").style.height = "calc(90% - 56px)";	
                     $("#maxResults").show();
                   } else {
+                  	document.getElementById("title").style.height = "7%";
+					document.getElementById("drawers-table").style.height = "calc(93% - 56px)";
                     $("#maxResults").hide();
                   }   
                 $('#results').html(numResults + " items found for advanced search");   
