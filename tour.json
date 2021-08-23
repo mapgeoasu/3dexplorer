@@ -25,6 +25,13 @@
                     "type": "info",
                     "text": "The Hub moved to Hayden Library in early 2020, as part of the major renovation of ASU's main library building",
                     "sceneId": "exterior"
+                },
+                {
+                    "pitch": 8,
+                    "yaw": 120,
+                    "type": "info",
+                    "text": "We use these mobile display panels to showcase maps as a \"pop-up\" map exhibit",
+                    "sceneId": "exterior"
                 }
             ]
         },
@@ -55,6 +62,12 @@
                     "yaw": -25,
                     "type": "info",
                     "text": "These decals are actually contour lines of Camelback Mountain, an iconic mountain located in the heart of metro Phoenix"
+                },
+                {
+                    "pitch": 10,
+                    "yaw": 70,
+                    "type": "info",
+                    "text": "This mounted work is a pseudo-color elevation map of the Greater Grand Canyon region"
                 }
             ]
         }
