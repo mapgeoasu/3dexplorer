@@ -19,7 +19,7 @@
                     "text": "Hub Exterior",
                     "sceneId": "exterior"
                 },
-                                {
+                {
                     "pitch": 6,
                     "yaw": 10,
                     "type": "info",
@@ -44,7 +44,7 @@
                     "text": "Hub Interior",
                     "sceneId": "interior"                   
                 },
-                                {
+                {
                     "pitch": 18,
                     "yaw": 20,
                     "type": "info",
