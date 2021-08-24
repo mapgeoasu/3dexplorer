@@ -80,6 +80,18 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     }
    }); 
 
+  // SQL Option is hidden by 
+  $('.hide').hide();
+
+  // key code for the SQL Search option
+  document.onkeyup=function(e){
+  var e = e || window.event; // for IE to cover IEs window event-object
+  if(e.altKey && e.which == 65) {
+    $('.hide').show();
+    return false;
+  }
+}
+
   // setup a new viewer to display the map scans
   var viewer = new Viewer(document.getElementById('image'), {
     navbar: false,
@@ -720,7 +732,7 @@ function getRowData(row) {
    // $(".esri-icon-table").show();
     // get the value of the search box
     var searchVal = $( "#search" ).val();
-    // get the value of the search type dropdwn
+    // get the value of the search type dropdown
     var typeVal = $( "#searchtype" ).val();
     if (typeVal == 'Keyword') {
       // call to query the REST API using the value of the search
@@ -799,7 +811,38 @@ function getRowData(row) {
                 }
               }
       });  
-    }   
+    } else if (typeVal == 'SQL') {
+    	console.log('searchVal');
+      // call to query the REST API using the value of the search
+      $.ajax({
+              dataType: 'json',
+              url: tableURL + 'query?where=' + searchVal + '&objectIds=&time=&resultType=none&outFields=*&returnHiddenFields=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&sqlFormat=none&f=pjson',
+              type: "GET",    
+              success: function(data) {
+                $("#maxResults").hide();
+                if (data.features.length == 0) {
+                  alert('The search returned no results. Please try different terms.');
+                } else {
+                 // hide the cabinet info div
+                 $("#drawerTitle").hide();  
+                 console.log(data.features);
+                 // Get the features from the REST API 
+                 var searchRes = data.features;  
+                 openNav();  
+                 var numResults = data.features.length;    
+                 $('#results').html(numResults + " items found for SQL Query.");
+                 document.getElementById("title").style.height = "7%";
+				 document.getElementById("drawers-table").style.height = "calc(93% - 56px)";	
+                 // Create a new table with the array of features 
+                 table.setData(searchRes);
+                 highLightDrawers(searchRes);
+                 table.setSort("attributes.LOC_ID", "asc")
+                 table.setGroupBy("attributes.LOC_ID");
+                 table.redraw(true);
+                }
+              }
+      }); 
+    } 
   });
 
  // if users hits enter perform the search   
@@ -821,15 +864,14 @@ function getRowData(row) {
       $('#search').attr("placeholder", "Search items...");
     } else if (value == 'Call Number') {
        $('#search').attr("placeholder", "Enter Call # (ie: G3300 1818 .H4 REF)");            
-    } else if (value == 'Date') {
+    } else if (value == 'SQL') {
       //$('#yearModal').modal('show');
-      $('#search').attr("placeholder", "Enter Year Range (Format: YYYY-YYYY)"); 
+      $('#search').attr("placeholder", "Enter SQL string."); 
     } else if (value == 'Location') {            
       $('#search').attr("placeholder", "Search location (ie: Arizona)"); 
     } else if (value == 'Theme') {            
       $('#search').attr("placeholder", "Search by theme (ie: Land use)"); 
-    } else if (value == 'Advanced') {
-       
+    } else if (value == 'Advanced') {       
       $('#advancedModal').modal('show');
     }
   });
