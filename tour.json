@@ -50,8 +50,8 @@
                     "sceneId": "interior"                   
                 },
                 {
-                    "pitch": 20,
-                    "yaw": 23,
+                    "pitch": 23,
+                    "yaw": 20,
                     "type": "info",
                     "text": "The Hub is located in Hayden Library, Room 334"
                 },
