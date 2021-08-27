@@ -28,7 +28,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   var view = new SceneView({
     container: "viewDiv",
-    qualityProfile: "high",
+    //qualityProfile: "high",
     highlightOptions: {
       color: [210, 49, 83] // color of the highlight when a feature is selected
     }, 
