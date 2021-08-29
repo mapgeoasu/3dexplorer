@@ -23,15 +23,13 @@
                     "pitch": 6,
                     "yaw": 10,
                     "type": "info",
-                    "text": "The Hub moved to Hayden Library in early 2020, as part of the major renovation of ASU's main library building",
-                    "sceneId": "exterior"
+                    "text": "The Hub moved to Hayden Library in early 2020, as part of the major renovation of ASU's main library building" 
                 },
                 {
                     "pitch": 8,
                     "yaw": 120,
                     "type": "info",
-                    "text": "We use these mobile display panels to showcase maps as a \"pop-up\" map exhibit",
-                    "sceneId": "exterior"
+                    "text": "We use these mobile display panels to showcase maps as a \"pop-up\" map exhibit"
                 }
             ]
         },
@@ -52,8 +50,8 @@
                     "sceneId": "interior"                   
                 },
                 {
-                    "pitch": 18,
-                    "yaw": 20,
+                    "pitch": 27,
+                    "yaw": 22,
                     "type": "info",
                     "text": "The Hub is located in Hayden Library, Room 334"
                 },
