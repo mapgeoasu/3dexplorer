@@ -28,7 +28,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   var view = new SceneView({
     container: "viewDiv",
-    qualityProfile: "high",
+    //qualityProfile: "high",
     highlightOptions: {
       color: [210, 49, 83] // color of the highlight when a feature is selected
     }, 
@@ -884,7 +884,18 @@ function getRowData(row) {
             type: "GET",    
             success: function(data) {
               var themeSelect = document.getElementById('theme');
-              var features = data.features;    
+              var features = data.features;
+
+               // remove null values from features
+              features = features.filter(function (el) {              	
+  				return el.attributes.THEME != null;
+			  }); 
+
+              // sort values in alphabetical order	
+              features.sort(function(a,b){              	
+    			return a.attributes.THEME.localeCompare(b.attributes.THEME);
+			  })
+
               Object.values(features).forEach(function(value) {
                 if (value.attributes.THEME !== null) {                                         
                   var themeVal = value.attributes.THEME;
@@ -905,6 +916,17 @@ function getRowData(row) {
             success: function(data) {
               var langSelect = document.getElementById('language');
               var features = data.features;    
+
+               // remove null values from features
+              features = features.filter(function (el) {              	
+  				return el.attributes.LANG != null;
+			  }); 
+
+              // sort values in alphabetical order	
+              features.sort(function(a,b){              	
+    			return a.attributes.LANG.localeCompare(b.attributes.LANG);
+			  })
+
               Object.values(features).forEach(function(value) {
                 if (value.attributes.LANG !== null) {                                          
                   var langVal = value.attributes.LANG;
@@ -923,7 +945,17 @@ function getRowData(row) {
             type: "GET",    
             success: function(data) {
               var formatSelect = document.getElementById('format');
-              var features = data.features;    
+              var features = data.features;
+              // remove null values from features
+              features = features.filter(function (el) {              	
+  				return el.attributes.FORMAT != null;
+			  }); 
+
+              // sort values in alphabetical order	
+              features.sort(function(a,b){              	
+    			return a.attributes.FORMAT.localeCompare(b.attributes.FORMAT);
+			  })
+  
               Object.values(features).forEach(function(value) { 
                 if (value.attributes.FORMAT !== null) {                                         
                   var formatVal = value.attributes.FORMAT;
