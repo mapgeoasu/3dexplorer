@@ -177,8 +177,9 @@ body, html {
   border: solid 1px black;
 }
 
-#infoModal h5 {
+h10 {
   font-weight: bold;
+  font-size: 18px;
 }
 
 /*popup links*/
