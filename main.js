@@ -1070,6 +1070,7 @@ function getRowData(row) {
     // create an empty array for search strings
     var searchStrings = [];
     // get the values of the boxes from the advanced search modal
+    var keyVal = $("#key").val();
     var themeVal = $("#theme").val();
     var langVal = $('#language').val();
     var geoVal = $("#location").val();
@@ -1078,14 +1079,21 @@ function getRowData(row) {
     var pubVal = $('#publisher').val();
     var startYearVal = $("#startYear").val();
     var endYearVal = $("#endYear").val();
-    console.log(themeVal, langVal, geoVal, authorVal, pubVal, startYearVal, endYearVal);
+    // Title, geo, theme, date, publisher, author, lang, tags  
+    console.log(keyVal, themeVal, langVal, geoVal, authorVal, pubVal, startYearVal, endYearVal);
     // if the search boxes are blank print error message
-    if (themeVal == 'Select Theme' && langVal == 'Select Language' && geoVal == "" && authorVal == "" 
+    if (keyVal == "" && themeVal == 'Select Theme' && langVal == 'Select Language' && geoVal == "" && authorVal == "" 
       && pubVal == "" && startYearVal == "" && endYearVal == "" && formatVal == 'Select Format') {
       alert('Please select or enter a value for at least one search field.')
     } else if (startYearVal != "" && endYearVal == "" || startYearVal == "" && endYearVal != "") {
       alert('Please enter a value for both Start Year and End Year');
     } else {
+       if (keyVal != "") {              
+        var keyString = "(TITLE LIKE " + "'%" + keyVal + "%' OR GEO LIKE " + "'%" + keyVal + "%' OR THEME LIKE " + "'%" + keyVal + "%'" +
+        " OR DATE LIKE " + "'%" + keyVal + "%' OR PUBLISHER LIKE " + "'%" + keyVal + "%' OR AUTHOR LIKE " + "'%" + keyVal + "%'" +
+        " OR LANG LIKE " + "'%" + keyVal + "%' OR TAGS LIKE " + "'%" + keyVal + "%')"; 
+        searchStrings.push(keyString);                      
+      }		
       if (themeVal != 'Select Theme') {              
         var themeString = "THEME = " + "'" + themeVal + "'"; 
         searchStrings.push(themeString);                      
