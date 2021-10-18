@@ -28,7 +28,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
 
   var view = new SceneView({
     container: "viewDiv",
-    //qualityProfile: "high",
+    qualityProfile: "high",
     highlightOptions: {
       color: [210, 49, 83] // color of the highlight when a feature is selected
     }, 
@@ -155,8 +155,10 @@ function getRowData(row) {
 
   if (drawerId >= 241 && drawerId < 253) {
     locName = "Shelf ";
-  } else if (drawerId >= 253) {
-    locName = "File Cabinet Drawer ";
+  } else if (drawerId >= 253 && drawerId < 261) {
+    locName = "Cabinet Drawer ";
+  } else if (drawerId >= 261) {
+    locName = "Stack Top ";
   }
 
   // Truncate the popup title
@@ -281,8 +283,13 @@ function getRowData(row) {
           // If the record is located in a bookshelf, use the shelf #
           if (locId >= 241 && locId < 253) {
             locId = shelfId;
-          } else if (locId >= 253 ) {
+          } else if (locId >= 253 && locId <= 260) {
             locId = fileCabId;
+          }
+          console.log(locName);      
+          if (locName == "Stack Top ") {
+            console.log("stack top");
+            locId = "";
           }
           // check if the clicked record has an existing image
           if (thumbUrl !== '' && thumbUrl !== null) {
@@ -438,7 +445,7 @@ function getRowData(row) {
             value = 12;
           }     
           return "Shelf: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
-        } else {
+        } else if (value >= 253 && value < 261 ) {
           if (value == 253) {
             value = 1;
           } else if (value == 254) {
@@ -456,7 +463,9 @@ function getRowData(row) {
           } else if (value == 260) {
             value = 8;
           }
-          return "File Cabinet Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
+          return "Cabinet Drawer: " + value + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
+        } else if (value >= 261) {
+          return "Stack Top" + "<span style='color:#8c1d40; margin-left:10px;'>(" + count + " items)</span>";
         }
       },    
   });        
@@ -567,26 +576,34 @@ function getRowData(row) {
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
-                          } else if (drawerId >= 253) {
-                            $('#drawerTitle').html("File Cabinet Drawer " + fileCabId + ": " + drawerTitle);
+                          } else if (drawerId >= 253 && drawerId <= 260) {
+                            $('#drawerTitle').html("Cabinet Drawer " + fileCabId + ": " + drawerTitle);
                             cabLayer.popupTemplate = {
-                            title: "<b><h6>File Cabinet Drawer " + fileCabId + "</b>" ,
+                            title: "<b><h6>Cabinet Drawer " + fileCabId + "</b>" ,
                             content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
                             "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
                             actions: [tableViewerAction] // adds the custom popup action
                             };            
-                          }                                    
+                          } else if (drawerId >= 261) {
+                            $('#drawerTitle').html(shelfName + ": " + drawerTitle);
+                            cabLayer.popupTemplate = {
+                            title: "<b><h6>" + shelfName + "</b>" ,
+                            content: "<b><h7>Description:</b> "  + drawerTitle + "<br><br><b>Item Count:</b> " + numResults +
+                            "<br><br><b>Range:</b> " + startCallNo + " - " + endCallNo,           
+                            actions: [tableViewerAction] // adds the custom popup action
+                            };            
+                          }                                                          
 
                          $('#results').html(numResults + " items"); 
                          
-                        // Change the table header width according to text size 	
-						if (drawerTitle.length > 22) {
-							document.getElementById("title").style.height = "10%";
-							document.getElementById("drawers-table").style.height = "calc(90% - 56px)";
-						} else {
-							document.getElementById("title").style.height = "7%";
-							document.getElementById("drawers-table").style.height = "calc(93% - 56px)";
-						}
+                         // Change the table header width according to text size 	
+            						 if (drawerTitle.length > 22) {
+            							document.getElementById("title").style.height = "10%";
+            							document.getElementById("drawers-table").style.height = "calc(90% - 56px)";
+            						 } else {
+            							document.getElementById("title").style.height = "7%";
+            							document.getElementById("drawers-table").style.height = "calc(93% - 56px)";
+            						 }
                          // clear any existing data in the table upon a new drawer click
                          table.clearData();
                          // if the sidebar is open, remove the 'view item list' button   
