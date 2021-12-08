@@ -71,6 +71,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
     }
   };
 
+  
   // Show modal on page load
   // Use cookies so it doesn't show up every time 
   $(document).ready(function() {
@@ -485,6 +486,117 @@ function getRowData(row) {
     }).items[0];
     // get the LOC_ID and DRAWER_TITLE  
     cabLayer.outFields = ['LOC_ID', 'LOC_TITLE', 'Shelf_ID', 'FC_DRAWER_ID'];   
+
+    // Get the window URL path
+  var urlPath = window.location.href;
+  // split the URL path, we just want the location number
+  var locNum = urlPath.split('#');  
+
+      var query = cabLayer.createQuery();
+      // Query the cabinets layer for the LOC_ID
+      query.where = "LOC_ID = " + locNum[1];
+      query.returnGeometry = true;               
+      query.returnZ = true;
+      query.outFields = ["OBJECTID", "LOC_ID", "Z_Min", "Z_Max"];
+      cabLayer.queryFeatures(query)
+        .then(function(response){
+            console.log(response);
+            var objIds = [];
+           // returns a feature set with features containing an OBJECTID
+           var objectID = response.features[0].attributes.OBJECTID;
+           var feature = response.features;
+           feature.forEach(function(feature) {
+            var ids = feature.attributes.OBJECTID;
+            objIds.push(ids);
+           });           
+           //var cabId = response.features[0].attributes.CAB_ID;
+           var zmin = (response.features[0].attributes.Z_Min / 3.28);
+           var zmax = (response.features[0].attributes.Z_Max / 3.28);
+          
+           view.whenLayerView(cabLayer).then(function(layerView) {
+              var queryExtent = new Query({
+                objectIds: [objIds]
+              });
+              // zoom to the extent of drawer that is clicked on the table  
+              var new_ext = new Extent({
+                xmin: response.features[0].geometry.extent.xmin, 
+                ymin: response.features[0].geometry.extent.ymin, 
+                zmin: zmin,
+                xmax: response.features[0].geometry.extent.xmax, 
+                ymax: response.features[0].geometry.extent.ymax,
+                zmax: zmax,                        
+                spatialReference: { wkid: 4326 }
+              });
+
+              cabLayer.queryExtent(queryExtent).then(function(result) {                
+             	// change the camera position to correspond to the matching cabinet of the record            
+	            if (locNum[1] >= 1 && locNum[1] <= 30 ) {              
+	             view.goTo({
+	              center: new_ext.expand(4),
+	             // zoom: 13,
+	              //tilt: 75,
+	              heading: 358.54
+	              }, {speedFactor: 0.5 });   
+	            } else if (locNum[1] >= 31 && locNum[1] <= 60 ) {
+	              view.goTo({
+	                center: new_ext.expand(4),
+	               // zoom: 13,
+	                //tilt: 75,
+	                heading: 170.25
+	              }, {speedFactor: 0.5 });             
+	            } else if (locNum[1] >= 61 && locNum[1] <= 120 ) {
+	              view.goTo({
+	                center: new_ext.expand(4),
+	               // zoom: 13,
+	                //tilt: 75,
+	                heading: 94.93
+	              }, {speedFactor: 0.5 });             
+	            } else if (locNum[1] >= 121 && locNum[1] <= 180 ) {
+	              view.goTo({
+	                center: new_ext.expand(4),
+	               // zoom: 13,
+	                //tilt: 75,
+	                heading: 92.12
+	              }, {speedFactor: 0.5});             
+	            } else if (locNum[1] >= 181 && locNum[1] <= 240 ) {
+	              view.goTo({
+	                center: new_ext.expand(4),
+	               // zoom: 13,
+	                tilt: 41.64,
+	                heading: 5.61
+	                }, {speedFactor: 0.5 });             
+	            } else if (locNum[1] >= 241 && locNum[1] <= 252 ) {
+	              view.goTo({
+	                center: new_ext.expand(6),
+	               // zoom: 13,
+	                tilt: 38.31,
+	                heading: 183.82
+	                }, {speedFactor: 0.5 }); 
+	            } else if (locNum[1] >= 253) {
+	              view.goTo({
+	                center: new_ext.expand(6),
+	               // zoom: 13,
+	                tilt: 62.73,
+	                heading: 0.50
+	                }, {speedFactor: 0.5 }); 
+	            }                     
+              });
+              
+              // if any, remove the previous highlights
+              if (highlight) {
+                highlight.remove();
+              }
+              // highlight the feature with the returned objectId
+              highlight = layerView.highlight(objIds);
+              })
+              // open a popup at the drawer location of the selected map
+              /*view.popup.open({
+                // Set the popup's title to the coordinates of the clicked location                          
+                title: "<h6><b>" + locNum[1], 
+                content: "The item is located in Location: " + locNum[1],
+                location: response.features[0].geometry.centroid,// Set the location of the popup to the clicked location                      
+              });  */
+              });            
 
     // retrieve the layer view of the scene layer
     view.whenLayerView(cabLayer)
@@ -1258,4 +1370,6 @@ function getRowData(row) {
                 }
     }
   }); 
+
+ 
 }); // end of map JS
