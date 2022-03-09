@@ -8,7 +8,7 @@
     "scenes": {
         "interior": {
             "title": "Hub Interior", 
-            "yaw": 45,
+            "yaw": 26,
             "type": "equirectangular",
             "panorama": "img/viewerimage.jpg",
             "hotSpots": [
