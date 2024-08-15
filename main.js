@@ -13,7 +13,7 @@ require(["esri/Map", "esri/views/SceneView", "esri/WebScene", "esri/layers/Scene
   // Service URL for the maps_master table on AGOL    
   var tableURL = "https://services3.arcgis.com/0OPQIK59PJJqLK0A/ArcGIS/rest/services/maps_master/FeatureServer/0/";
   // Title for the Cabinets Layer
-  var cabTitle = "Cabinets_Shelves_File_updated";        
+  var cabTitle = "Cabinets_Shelves_File_v3";        
  
   // setup the variable for highlight with no value  
   var highlight = null;  
