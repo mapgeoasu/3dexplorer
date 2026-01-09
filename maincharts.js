@@ -208,11 +208,11 @@ require([
     //view.popup.close();
     var drawerId = row._row.data.attributes.LOC_ID;
     var itemTitle = row._row.data.attributes.TITLE;
-    var itemDate = row._row.data.attributes.DATE;
+    var itemDate = row._row.data.attributes.PRINT_DATE;
     var itemAuthor = row._row.data.attributes.AUTHOR;
     var itemLink = row._row.data.attributes.CATALOG_LINK;
     var itemPub = row._row.data.attributes.PUBLISHER;
-    var itemScale = row._row.data.attributes.SCALE;
+    var itemScale = row._row.data.attributes.SCALE_RF;
     var itemNum = row._row.data.attributes.CALL_NUM;
     var thumbUrl = row._row.data.attributes.THUMB_URL;
     var indexUrl = row._row.data.attributes.INDEX_URL;
