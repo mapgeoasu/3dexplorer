@@ -524,8 +524,8 @@ require([
       { title: "Title", field: "attributes.TITLE", width: 500 },
       { title: "Author", field: "attributes.AUTHOR", width: 300, visible: false },
       { title: "Publisher", field: "attributes.PUBLISHER", width: 300, visible: false },
-      { title: "Date", field: "attributes.DATE", width: 150 },
-      { title: "Scale", field: "attributes.SCALE", width: 120, visible: false },
+      { title: "Date", field: "attributes.PRINT_DATE", width: 150 },
+      { title: "Scale", field: "attributes.SCALE_RF", width: 120, visible: false },
       {
         title: "Catalog Item",
         field: "attributes.CATALOG_LINK",
