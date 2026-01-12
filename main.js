@@ -1052,13 +1052,13 @@ require([
           searchVal +
           "%25%27+OR+Geo+LIKE+%27%25" +
           searchVal +
-          "%25%27+OR+DATE+LIKE+%27%25" +
+          "%25%27+OR+PRINT_DATE+LIKE+%27%25" +
           searchVal +
           "%25%27+OR+PUBLISHER+LIKE+%27%25" +
           searchVal +
           "%25%27+OR+AUTHOR+LIKE+%27%25" +
           searchVal +
-          "%25%27+OR+SCALE+LIKE+%27%25" +
+          "%25%27+OR+SCALE_RF+LIKE+%27%25" +
           searchVal +
           "%25%27+OR+LANG+LIKE+%27%25" +
           searchVal +
@@ -1451,7 +1451,7 @@ require([
           "'%" +
           keyVal +
           "%'" +
-          " OR DATE LIKE " +
+          " OR PRINT_DATE LIKE " +
           "'%" +
           keyVal +
           "%' OR PUBLISHER LIKE " +
@@ -1495,7 +1495,7 @@ require([
         searchStrings.push(pubString);
       }
       if (startYearVal != "" && endYearVal != "") {
-        var dateString = "DATE BETWEEN " + "'" + startYearVal + "' AND " + "'" + endYearVal + "'";
+        var dateString = "PRINT_DATE BETWEEN " + "'" + startYearVal + "' AND " + "'" + endYearVal + "'";
         searchStrings.push(dateString);
       }
       // join the search strings from the array
