@@ -480,7 +480,7 @@ require([
       { title: "Region / Geography", field: "attributes.GEO", width: 200, visible: false },
       { title: "Drawer ID", field: "attributes.LOC_ID", width: 120, visible: false },
       { title: "Location", field: "attributes.LOC_TYPE", width: 120, visible: false },
-      { title: "Order", field: "attributes.MAP_ORDER", width: 120, visible: false }
+      { title: "Order", field: "attributes.MAP_ORDER__FORMULA_", width: 120, visible: false }
     ],
     initialSort: [
       //{column:"attributes.MAP_ORDER", dir:"asc"}, //sort by this first
@@ -772,7 +772,7 @@ require([
                   console.log(data.features);
                   // Sort data array by MAP_ORDER value for call numbers
                   data.features.sort(function (a, b) {
-                    return a.attributes.MAP_ORDER - b.attributes.MAP_ORDER;
+                    return a.attributes.MAP_ORDER__FORMULA_ - b.attributes.MAP_ORDER__FORMULA_;
                   });
                   // Get the features from the REST API
                   features = data.features;
@@ -867,7 +867,7 @@ require([
                     table.redraw();
                     table.setGroupBy("attributes.LOC_ID");
                     $(function () {
-                      table.setSort("attributes.MAP_ORDER", "asc");
+                      table.setSort("attributes.MAP_ORDER__FORMULA_", "asc");
                     });
                   } else {
                     view.popup.viewModel.allActions.getItemAt(0).visible = true;
@@ -1604,7 +1604,7 @@ require([
       table.setData(features);
       table.setGroupBy("attributes.LOC_ID");
       $(function () {
-        table.setSort("attributes.MAP_ORDER", "asc");
+        table.setSort("attributes.MAP_ORDER__FORMULA_", "asc");
       });
       table.redraw(true);
     }
