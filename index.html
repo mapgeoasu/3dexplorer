@@ -1,252 +1,418 @@
-<html>
+<html lang=us>
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-18265836-5"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-      gtag('config', 'UA-18265836-5');
+      gtag("config", "UA-18265836-5");
     </script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <title>Map and Geospatial Hub 3D Explorer</title>
-    <link rel="icon" type="image/png" href="img/icon_mgh.png?">
+    <link rel="icon" type="image/png" href="img/icon_mgh.png?" />
     <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css" />
-    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">    
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous" />
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/4.9.3/css/tabulator_midnight.min.css" integrity="sha512-epdhm+q+Caq67Ujjcr7kPkNsBoFtmyaqHFuujUjygZnnRVRK70X6dOjX3Z4RDJF+bmG1KBwYHJ/OxMZgm1F2hQ==" crossorigin="anonymous" /> -->
+    
+    <!--PANNELLUM-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.js"></script>
+    
     <!-- Load icon library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.css" integrity="sha512-tYobxYoCZxl0CejYCA8c4w8HRcg3wRoKaGYIQ/2ILqyB4vRqMd/Jmehxod1dQJ2uE/9rDY9pG48isM8SHEAwDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.css"
+      integrity="sha512-tYobxYoCZxl0CejYCA8c4w8HRcg3wRoKaGYIQ/2ILqyB4vRqMd/Jmehxod1dQJ2uE/9rDY9pG48isM8SHEAwDQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+      integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.js" integrity="sha512-psAniLUS9J4A5KNQiSt9XMNeVSMx/Rz89vQJqeYlOIiTR5WK8zU/8EPwAKt+522eeV04QUzIwX5VrAW10FbdeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://js.arcgis.com/4.18/"></script>  
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.0/viewer.js"
+      integrity="sha512-psAniLUS9J4A5KNQiSt9XMNeVSMx/Rz89vQJqeYlOIiTR5WK8zU/8EPwAKt+522eeV04QUzIwX5VrAW10FbdeQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"></script>
+    <script src="https://js.arcgis.com/4.18/"></script>
   </head>
-  <body>     
+  <body>
     <!-- Main navbar -->
     <nav class="navbar navbar-expand-md navbar-light bg-light">
-  <a class="navbar-brand" href="https://mapgeoasu.github.io/3dexplorer/" target="_blank" rel="noopener">
-    <img src="img/asulogo.png" width="50" height="50" class="d-inline-block align-top" alt="">
-      &nbsp;Map and Geospatial Hub 3D Explorer
-  </a>
-  <div class="collapse navbar-collapse" id="navbarNav" style="">
-        <ul class="navbar-nav mr-auto">           
-        </ul>
+      <a class="navbar-brand" href="https://mapgeoasu.github.io/3dexplorer/" target="_blank" rel="noopener">
+        <img src="img/asulogo.png" width="50" height="50" class="d-inline-block align-top" alt="" />
+        &nbsp;Map and Geospatial Hub 3D Explorer
+      </a>
+      <div class="collapse navbar-collapse" id="navbarNav" style="">
+        <ul class="navbar-nav mr-auto"></ul>
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href=" https://geospatial.asu.edu" target="_blank" rel="noopener">Map and Geospatial Hub</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://geodata-asu.hub.arcgis.com/pages/indexes" target="_blank" rel="noopener">ASU GeoData</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://lib.asu.edu/geo/services" target="_blank" rel="noopener">Submit a Service Request</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" https://geospatial.asu.edu" target="_blank" rel="noopener"
+              >Map and Geospatial Hub</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://geodata-asu.hub.arcgis.com/pages/indexes" target="_blank" rel="noopener"
+              >ASU GeoData</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://lib.asu.edu/geo/services" target="_blank" rel="noopener"
+              >Submit a Service Request</a
+            >
+          </li>
         </ul>
+      </div>
+    </nav>
+    <div id="mySidebar" class="sidebar">
+      <div id="title">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <center>
+          <div id="drawerTitle" style="display: inline-block"></div>
+          <br />
+          <div id="results" style="display: inline-block"></div>
+          <br />
+          <div id="maxResults" style="display: inline-block">*Searches limited to 32000 results</div>
+        </center>
+      </div>
+      <div id="drawers-table"></div>
     </div>
-</nav>
-<div id="mySidebar" class="sidebar">
-  <div id="title">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <center><div id="drawerTitle" style="display: inline-block;"></div><br><div id="results" style="display: inline-block;"></div></h5>
-  <br><div id="maxResults" style="display: inline-block;">*Searches limited to 32000 results</div></center></div>
-  <div id="drawers-table"></div>
-</div>
     <div id="viewDiv">
-     <!-- Search Bar -->
-    <div class="container justify-content-center">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="input-group mb-3"> <input type="text" class="form-control input-text" placeholder="Search items..." aria-label="Title Search" id="search" aria-describedby="basic-addon2" autocomplete="off">
-                <select class="form-control" id="searchtype">
-                  <option>Keyword</option>
-                  <option>Call Number</option>  
-                  <option>Advanced</option>
-                  <option class="hide">SQL</option>                  
-                </select>
-                <div class="input-group-append"> <button class="btn btn-outline-warning btn-lg" type="button" id="submit" title="Search"><i class="fa fa-search"></i></button> </div>
+      <!-- Search Bar -->
+      <div class="container justify-content-center">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control input-text"
+                placeholder="Search items..."
+                aria-label="Title Search"
+                id="search"
+                aria-describedby="basic-addon2"
+                autocomplete="off" />
+              <select class="form-control" id="searchtype">
+                <option>Keyword</option>
+                <option>Call Number</option>
+                <option>Advanced</option>
+                <option class="hide">SQL</option>
+              </select>
+              <div class="input-group-append">
+                <button class="btn btn-outline-warning btn-lg" type="button" id="submit" title="Search">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-    </div> 
-<div>
-  <!-- Default Image for ViewerJS -->
-  <img id="image" src="" alt="Picture">
-</div>     
-<!-- Modal for the 360 Panorama -->
-<div class="modal" id="viewerModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Hub 360 Photo Viewer</h5> 
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>         
+    <div>
+      <!-- Default Image for ViewerJS -->
+      <img id="image" src="" alt="Picture" />
+    </div>
+    <!-- Modal for the 360 Panorama -->
+    <!--
+    <div class="modal" id="viewerModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Hub 360 Photo Viewer</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <iframe
+              class="myFrame"
+              id="pano"
+              width="760"
+              height="400"
+              allowfullscreen
+              style="border-style: none"
+              src=""></iframe>
+          </div>
         </div>
-        <div class="modal-body">
-          <iframe class ="myFrame" id="pano" width="760" height="400" allowfullscreen style="border-style:none;" src=""></iframe>
-        </div>           
       </div>
     </div>
-</div>
-<!-- Modal for the advanced search -->
-<div class="modal" tabindex="-1" role="dialog" id="advancedModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Advanced Search</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Enter values for at least one search criterion. Fields can be left blank.</p>
-        <form>
-    <div class="form-row">      
-    <div class="form-group col-md-12">  
-     <label for="format">Keyword</label>
-     <input type="text" class="form-control" id="key" placeholder="Enter Keywords">
-    </div>  
-    </div>       
-   <div class="form-row">      
-    <div class="form-group col-md-6">  
-     <label for="format">Format</label>
-      <select id="format" class="form-control">
-        <option selected>Select Format</option>        
-      </select>
-    </div>  
-    <div class="form-group col-md-6">
-      <label for="theme">Theme</label>
-      <select id="theme" class="form-control">
-        <option selected>Select Theme</option>        
-      </select>
-    </div>     
-  </div>     
-  <div class="form-row">    
-    <div class="form-group col-md-6">  
-      <label for="location">Region / Geography</label>
-      <input type="text" class="form-control" id="location" placeholder="Region / Geography">
-    </div> 
-    <div class="form-group col-md-6">
-      <label for="language">Language</label>
-      <select id="language" class="form-control">
-        <option selected>Select Language</option>        
-      </select>
-    </div>
-   </div>  
-   <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="startYear">Start Year</label>
-      <input type="text" class="form-control" id="startYear" placeholder="YYYY">
-    </div>
-    <div class="form-group col-md-6">
-      <label for="endYear">End Year</label>
-      <input type="text" class="form-control" id="endYear" placeholder="YYYY">
-    </div>    
-  </div>
-  <div class="form-row">  
-    <div class="form-group col-md-6">  
-      <label for="author">Author</label>
-      <input type="text" class="form-control" id="author" placeholder="Author">
-    </div>      
-    <div class="form-group col-md-6">
-      <label for="publisher">Publisher</label>
-      <input type="text" class="form-control" id="publisher" placeholder="Publisher">
-    </div>      
-  </div>                 
-</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="advancedBtn">Search</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    -->
+    
+    <!--Begin Container for pano-->
+    <!-- the viewer container must have a defined size -->
+    <div class="modal" id="viewerModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Hub 360 Photo Viewer</h5> 
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>         
+          </div>
+          <div class="modal-body" id="pano">
+            <div id="panorama"></div>
+          </div>           
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<!-- Begin Modal for the information box / splash screen -->
-<div class="modal" tabindex="-1" role="dialog" id="infoModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" style="font-weight: normal !important;">About the 3D Explorer</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+    
+    <!-- Modal for the advanced search -->
+    <div class="modal" tabindex="-1" role="dialog" id="advancedModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Advanced Search</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Enter values for at least one search criterion. Fields can be left blank.</p>
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="format">Keyword</label>
+                  <input type="text" class="form-control" id="key" placeholder="Enter Keywords" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="format">Format</label>
+                  <select id="format" class="form-control">
+                    <option selected>Select Format</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="theme">Theme</label>
+                  <select id="theme" class="form-control">
+                    <option selected>Select Theme</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="location">Region / Geography</label>
+                  <input type="text" class="form-control" id="location" placeholder="Region / Geography" />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="language">Language</label>
+                  <select id="language" class="form-control">
+                    <option selected>Select Language</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="startYear">Start Year</label>
+                  <input type="text" class="form-control" id="startYear" placeholder="YYYY" />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="endYear">End Year</label>
+                  <input type="text" class="form-control" id="endYear" placeholder="YYYY" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="author">Author</label>
+                  <input type="text" class="form-control" id="author" placeholder="Author" />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="publisher">Publisher</label>
+                  <input type="text" class="form-control" id="publisher" placeholder="Publisher" />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="advancedBtn">Search</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-          <p>Welcome to the virtual <a href="https://geospatial.asu.edu/" class="infolink" target="_blank" rel="noopener noreferrer">Map and Geospatial Hub </a>at the Arizona State University Library!</p>
-          <p> Find us in the real world in ASU’s Hayden Library, Tempe, Arizona, USA.</p>
-		        <img src="img/1_splash_screen_replacement_intro.JPG" alt="3d explorer" class="responsive"><br><br>
-          <p>Here at the Hub, we hold thousands of maps, aerial photographs, and other geographic information resources.</p> 
-          <p>Use this <b>3D Explorer</b> application to virtually explore the Hub space and its resources.</p>
-        <h10>Navigate the Scene</h10>
-          <p>Use the navigation controls (highlighted in red) to move through and reposition the 3D map scene.</p> 
-		      <ul>
-			      <li>Zoom-in</li>
-			      <li>Zoom-out</li>
-			      <li>Pan</li>
-			      <li>Rotate</li>
-			      <li>Orient north</li>
-		      </ul>  
-          <p>Use the “home” button (highlighted in blue) to return to the default scene view.</p>
-	        <p>Use the “play” button (highlighted in green) to auto-rotate the scene; “pause” stops the rotation.</p>
-		        <img src="img/2_splash_screen_navigation_buttons.JPG" alt="Navigation controls" class="responsive"><br><br>
-        <h10>Explore our Maps</h10>
-	        <p>Exploring our cartographic resources is easy. Simply select any drawer or shelf. A pop-up box will appear and summarize the contents of that location.</p> 
-          <p>Select the “View Item List” button in the pop-up box to view a list of all items contained in that location.</p> 
-		        <img src="img/3_splash_screen_map_drawer.JPG" alt="Map drawers" class="responsive"><br><br>
-          <p>In the panel that appears, you’ll see a list of all items contained in your selection. Choose any of the items in the list to learn more details about it.</p>
-			      <img src="img/4_splash_screen_map_drawer_item_list.JPG" alt="list of maps in drawer" class="responsive"><br><br>
-          <p>The pop-up box will reveal details such as the item’s title, publication date, author, publisher, cartographic scale, and library catalog record.</p> 
-		        <img src="img/5_splash_screen_map_drawer_item_details.JPG" alt="Sidebar item list" class="responsive"><br><br>
-	        <p>When available, you will also find a link to view a particular item in a separate spatial index web map, or a link to a resource that curates the item with more context.</p>
-	        <p>A thumbnail image of the item will also appear in the pop-up box when available.</p>
-	        <p>If a thumbnail image is present, you can select it to view it more closely. Use the image viewer controls to magnify, rotate, flip, or otherwise manipulate the view of the image.</p>
-		        <img src="img/6_splash_screen_map_drawer_item_thumbnails.JPG" alt="Image viewer" class="responsive"><br><br>
-        <h10>Search for Maps</h10>
-	        <p>Search for maps, aerial photos, and other geographic information resources by attributes such as keyword or call number.</p>
-		        <img src="img/7_splash_screen_search_bar.JPG" alt="Search bar" class="responsive"><br><br>
-	        <p>Use Advanced Search to apply multiple criteria to your search, such as format, theme, region, timeframe, etc.</p>
-		        <img src="img/8_splash_screen_advanced_search.JPG" alt="Advanced search" class="responsive"><br><br>
-	        <p>Item-level search results will appear in the panel. All locations containing the search results will be highlighted throughout the scene.</p>
-		        <img src="img/9_splash_screen_search_results.JPG" alt="Search results" class="responsive"><br><br>
-	        <p>The sidebar and pop-up box will indicate the total number of items identified by your search. The sidebar also groups and counts search results by each location.</p>
-        <h10>Explore the Hub Space</h10>
-	        <p>Additional information is available for nearly every object in the 3D model. Explore the Hub by selecting features in the space. </p>
-	        <p>For example, you can also select office locations to learn more about the staff members who occupy them, as well as how to get in touch.</p>
-		        <img src="img/10_splash_screen_explore_office.JPG" alt="staff offices" class="responsive"><br><br>
-	        <p>Or select globes to learn about and view photos of each one.</p>
-		        <img src="img/11_splash_screen_explore_globe.JPG" alt="large globe highlighted" class="responsive"><br><br>
-	        <p>Select the maps and other geovisualizations displayed through the space to learn more about them.</p>
-		        <img src="img/12_splash_screen_explore_map_display.JPG" alt="map on display wall selected" class="responsive"><br><br>
-	        <p>Select other features in the workspace too, such as equipment and furniture.</p>
-		        <img src="img/13_splash_screen_explore_workstation.JPG" alt="highlighted workstation" class="responsive"><br><br>
-        <h10>View the Hub Space</h10>	
-	        <p>Select the button with the image icon to view a 360 degree panorama photo of the space.</p>
-		        <img src="img/14_splash_screen_panorama_button.jpg" alt="panorama button" class="responsive"><br><br>
-	        <p>Virtually tour within the panorama viewer and discover “hotspots” that reveal interesting facts about the space.</p>
-		        <img src="img/15_splash_screen_pano.jpg" alt="panorama with hotspot selected" class="responsive"><br><br>
-        <h10>Access this Information Again</h10>		
-	        <p>Select the “i” (information) button to reactivate this information box.</p>
-		        <img src="img/16_splash_screen_read_again.jpg" alt="info button highlighted" class="responsive"><br><br>
-        <h10>Learn More</h10>
-          <p>Visit our web page to learn more about the ASU Library Map and Geospatial Hub: <a href="https://geospatial.asu.edu" class="infolink" target="_blank" rel="noopener noreferrer">geospatial.asu.edu</a>.</p>
-          <p>Visit the Map and Geospatial Hub’s <a href="https://github.com/mapgeoasu" class="infolink" target="_blank" rel="noopener noreferrer">GitHub Page</a> to learn more about this project, including its source code and production credits.</p>
-      </div>      
     </div>
-  </div>
-</div>
-<!-- End Modal for the information box -->
-<script src="main.js"></script>
+    <!-- Begin Modal for the information box / splash screen -->
+    <div class="modal" tabindex="-1" role="dialog" id="infoModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="font-weight: normal !important">About the 3D Explorer</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Welcome to the virtual
+              <a href="https://geospatial.asu.edu/" class="infolink" target="_blank" rel="noopener noreferrer"
+                >Map and Geospatial Hub </a
+              >at the Arizona State University Library!
+            </p>
+            <p>Find us in the real world in ASU’s Hayden Library, Tempe, Arizona, USA.</p>
+            <img src="img/1_splash_screen_replacement_intro.JPG" alt="3d explorer" class="responsive" /><br /><br />
+            <p>
+              Here at the Hub, we hold thousands of maps, aerial photographs, and other geographic information
+              resources.
+            </p>
+            <p>Use this <b>3D Explorer</b> application to virtually explore the Hub space and its resources.</p>
+            <h10>Navigate the Scene</h10>
+            <p>Use the navigation controls (highlighted in red) to move through and reposition the 3D map scene.</p>
+            <ul>
+              <li>Zoom-in</li>
+              <li>Zoom-out</li>
+              <li>Pan</li>
+              <li>Rotate</li>
+              <li>Orient north</li>
+            </ul>
+            <p>Use the “home” button (highlighted in blue) to return to the default scene view.</p>
+            <p>Use the “play” button (highlighted in green) to auto-rotate the scene; “pause” stops the rotation.</p>
+            <img
+              src="img/2_splash_screen_navigation_buttons.JPG"
+              alt="Navigation controls"
+              class="responsive" /><br /><br />
+            <h10>Explore our Maps</h10>
+            <p>
+              Exploring our cartographic resources is easy. Simply select any drawer or shelf. A pop-up box will appear
+              and summarize the contents of that location.
+            </p>
+            <p>
+              Select the “View Item List” button in the pop-up box to view a list of all items contained in that
+              location.
+            </p>
+            <img src="img/3_splash_screen_map_drawer.JPG" alt="Map drawers" class="responsive" /><br /><br />
+            <p>
+              In the panel that appears, you’ll see a list of all items contained in your selection. Choose any of the
+              items in the list to learn more details about it.
+            </p>
+            <img
+              src="img/4_splash_screen_map_drawer_item_list.JPG"
+              alt="list of maps in drawer"
+              class="responsive" /><br /><br />
+            <p>
+              The pop-up box will reveal details such as the item’s title, publication date, author, publisher,
+              cartographic scale, and library catalog record.
+            </p>
+            <img
+              src="img/5_splash_screen_map_drawer_item_details.JPG"
+              alt="Sidebar item list"
+              class="responsive" /><br /><br />
+            <p>
+              When available, you will also find a link to view a particular item in a separate spatial index web map,
+              or a link to a resource that curates the item with more context.
+            </p>
+            <p>A thumbnail image of the item will also appear in the pop-up box when available.</p>
+            <p>
+              If a thumbnail image is present, you can select it to view it more closely. Use the image viewer controls
+              to magnify, rotate, flip, or otherwise manipulate the view of the image.
+            </p>
+            <img
+              src="img/6_splash_screen_map_drawer_item_thumbnails.JPG"
+              alt="Image viewer"
+              class="responsive" /><br /><br />
+            <h10>Search for Maps</h10>
+            <p>
+              Search for maps, aerial photos, and other geographic information resources by attributes such as keyword
+              or call number.
+            </p>
+            <img src="img/7_splash_screen_search_bar.JPG" alt="Search bar" class="responsive" /><br /><br />
+            <p>
+              Use Advanced Search to apply multiple criteria to your search, such as format, theme, region, timeframe,
+              etc.
+            </p>
+            <img src="img/8_splash_screen_advanced_search.JPG" alt="Advanced search" class="responsive" /><br /><br />
+            <p>
+              Item-level search results will appear in the panel. All locations containing the search results will be
+              highlighted throughout the scene.
+            </p>
+            <img src="img/9_splash_screen_search_results.JPG" alt="Search results" class="responsive" /><br /><br />
+            <p>
+              The sidebar and pop-up box will indicate the total number of items identified by your search. The sidebar
+              also groups and counts search results by each location.
+            </p>
+            <h10>Explore the Hub Space</h10>
+            <p>
+              Additional information is available for nearly every object in the 3D model. Explore the Hub by selecting
+              features in the space.
+            </p>
+            <p>
+              For example, you can also select office locations to learn more about the staff members who occupy them,
+              as well as how to get in touch.
+            </p>
+            <img src="img/10_splash_screen_explore_office.JPG" alt="staff offices" class="responsive" /><br /><br />
+            <p>Or select globes to learn about and view photos of each one.</p>
+            <img
+              src="img/11_splash_screen_explore_globe.JPG"
+              alt="large globe highlighted"
+              class="responsive" /><br /><br />
+            <p>Select the maps and other geovisualizations displayed through the space to learn more about them.</p>
+            <img
+              src="img/12_splash_screen_explore_map_display.JPG"
+              alt="map on display wall selected"
+              class="responsive" /><br /><br />
+            <p>Select other features in the workspace too, such as equipment and furniture.</p>
+            <img
+              src="img/13_splash_screen_explore_workstation.JPG"
+              alt="highlighted workstation"
+              class="responsive" /><br /><br />
+            <h10>View the Hub Space</h10>
+            <p>Select the button with the image icon to view a 360 degree panorama photo of the space.</p>
+            <img src="img/14_splash_screen_panorama_button.jpg" alt="panorama button" class="responsive" /><br /><br />
+            <p>
+              Virtually tour within the panorama viewer and discover “hotspots” that reveal interesting facts about the
+              space.
+            </p>
+            <img
+              src="img/15_splash_screen_pano.jpg"
+              alt="panorama with hotspot selected"
+              class="responsive" /><br /><br />
+            <h10>Access this Information Again</h10>
+            <p>Select the “i” (information) button to reactivate this information box.</p>
+            <img
+              src="img/16_splash_screen_read_again.jpg"
+              alt="info button highlighted"
+              class="responsive" /><br /><br />
+            <h10>Learn More</h10>
+            <p>
+              Visit our web page to learn more about the ASU Library Map and Geospatial Hub:
+              <a href="https://geospatial.asu.edu" class="infolink" target="_blank" rel="noopener noreferrer"
+                >geospatial.asu.edu</a
+              >.
+            </p>
+            <p>
+              Visit the Map and Geospatial Hub’s
+              <a href="https://github.com/mapgeoasu" class="infolink" target="_blank" rel="noopener noreferrer"
+                >GitHub Page</a
+              >
+              to learn more about this project, including its source code and production credits.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal for the information box -->
+    <script src="main.js"></script>
   </body>
 </html>

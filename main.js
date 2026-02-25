@@ -1628,5 +1628,80 @@ require([
       }
     }
   });
-}); // end of map JS
 
+  // Pannellum 3D Photo Viewer settings
+  pannellum.viewer("panorama", {
+    default: {
+      firstScene: "interior",
+      sceneFadeDuration: 1000,
+      autoRotate: -5,
+      autoload: true
+    },
+
+    scenes: {
+      interior: {
+        title: "Hub Interior",
+        yaw: 26,
+        type: "equirectangular",
+        panorama: "img/viewerimage.jpg",
+        hotSpots: [
+          {
+            pitch: -2.1,
+            yaw: 49,
+            type: "scene",
+            text: "Hub Exterior",
+            sceneId: "exterior"
+          },
+          {
+            pitch: 7,
+            yaw: 1,
+            type: "info",
+            text: "The Hub moved to Hayden Library in early 2020, as part of the major renovation of ASU's main library building"
+          },
+          {
+            pitch: 8,
+            yaw: 120,
+            type: "info",
+            text: 'We use these mobile display panels to showcase maps as a "pop-up" map exhibit'
+          }
+        ]
+      },
+
+      exterior: {
+        title: "Hub Exterior",
+        hfov: 190,
+        yaw: 5,
+        pitch: 1,
+        type: "equirectangular",
+        panorama: "img/viewerimage2.jpg",
+        hotSpots: [
+          {
+            pitch: 8,
+            yaw: 20,
+            type: "scene",
+            text: "Hub Interior",
+            sceneId: "interior"
+          },
+          {
+            pitch: 27,
+            yaw: 22,
+            type: "info",
+            text: "The Hub is located in Hayden Library, Room 334"
+          },
+          {
+            pitch: 12,
+            yaw: -25,
+            type: "info",
+            text: "These decals are actually contour lines of Camelback Mountain, an iconic mountain located in the heart of metro Phoenix"
+          },
+          {
+            pitch: 8,
+            yaw: 60,
+            type: "info",
+            text: "This mounted work is a pseudo-color elevation map of the Greater Grand Canyon region"
+          }
+        ]
+      }
+    }
+  });
+}); // end of map JS

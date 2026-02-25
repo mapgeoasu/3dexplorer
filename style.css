@@ -477,6 +477,12 @@ h7 {
   padding: 0px;  
 }
 
+/*Panorama window size*/
+#panorama { 
+    width: 760px;
+    height: 400px;
+}
+
 @media only screen and (max-device-width: 1200px){
   /*Search bar container*/
 .container {
